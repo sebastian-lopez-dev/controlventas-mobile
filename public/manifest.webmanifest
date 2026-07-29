@@ -1,0 +1,38 @@
+{
+    "id": "/",
+    "name": "ControlVentas - Ventas y cobranzas",
+    "short_name": "ControlVentas",
+    "description": "Sistema para controlar clientes, productos, contratos, salidas de mercadería y cobranzas.",
+    "lang": "es-PE",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#255be7",
+    "background_color": "#eef4ff",
+    "categories": [
+        "business",
+        "finance",
+        "productivity"
+    ],
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
