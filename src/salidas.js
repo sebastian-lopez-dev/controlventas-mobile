@@ -1263,7 +1263,7 @@ async function mostrarFormularioSalida(usuario, volverASalidas) {
             <h2>Datos de la ruta</h2>
 
             <label>
-              Fecha de salida <b>*</b>
+              Fecha de salida
 
               <input
                 type="date"
@@ -1273,7 +1273,7 @@ async function mostrarFormularioSalida(usuario, volverASalidas) {
             </label>
 
             <label>
-              Destino <b>*</b>
+              Destino
 
               <input
                 type="text"

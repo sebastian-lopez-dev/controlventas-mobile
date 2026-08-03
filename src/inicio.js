@@ -23,7 +23,7 @@ function mostrarInicioAdministrador(usuario) {
         <div class="saludo-con-salida">
           <div class="saludo-usuario">
             <p>${obtenerSaludo()}</p>
-            <h1>${escaparTexto(usuario.nombreCompleto)}</h1>
+            <h1>Christian</h1>
           </div>
 
           <button
