@@ -1,36 +1,60 @@
 import "./style.css";
-
+import { API_URL } from "./api.js";
 import { mostrarInicio } from "./inicio.js";
 
 import {
-    iniciarInstalacionPWA
+  iniciarInstalacionPWA
 } from "./instalacion.js";
 
-iniciarInstalacionPWA();
+async function configurarPWA() {
+  if (import.meta.env.PROD) {
+    iniciarInstalacionPWA();
+    return;
+  }
+
+  if ("serviceWorker" in navigator) {
+    const registros =
+      await navigator.serviceWorker.getRegistrations();
+
+    await Promise.all(
+      registros.map((registro) =>
+        registro.unregister()
+      )
+    );
+  }
+
+  if ("caches" in window) {
+    const nombresCache =
+      await window.caches.keys();
+
+    await Promise.all(
+      nombresCache.map((nombre) =>
+        window.caches.delete(nombre)
+      )
+    );
+  }
+}
+
+configurarPWA();
 
 document.querySelector("#app").innerHTML = `
   <main class="pagina-login">
     <section class="login-contenedor">
 
       <div class="marca">
-        <div class="marca-icono">CV</div>
+        <img
+          src="/logo.jpg"
+          alt="Logo Corazón de Jesús"
+          class="marca-logo"
+        >
 
         <div>
-          <h2>ControlVentas</h2>
-          <p>Ventas y cobranzas</p>
+          <h2>Corazón de Jesús</h2>
         </div>
-      </div>
-
-      <div class="etiqueta-negocio">
-        Negocio familiar
       </div>
 
       <div class="presentacion">
         <h1>Bienvenido</h1>
-        <p>
-          Ingresa para administrar las ventas,
-          contratos y cobranzas.
-        </p>
       </div>
 
       <form id="formLogin" class="formulario-login">
@@ -70,40 +94,17 @@ document.querySelector("#app").innerHTML = `
           </div>
         </div>
 
-        <p id="mensajeLogin" class="mensaje-login"></p>
+         <p
+          id="mensajeLogin"
+          class="mensaje-login"
+          aria-live="polite"
+        ></p>
 
         <button type="submit" class="btn-ingresar">
           Ingresar
         </button>
 
       </form>
-
-      <div class="usuarios-aplicacion">
-
-        <div class="usuario-tipo">
-          <div class="usuario-icono administrador">A</div>
-
-          <div>
-            <strong>Administrador</strong>
-            <span>Tu papá administra todo</span>
-          </div>
-        </div>
-
-        <div class="usuario-tipo">
-          <div class="usuario-icono cobrador">G</div>
-
-          <div>
-            <strong>Cobrador</strong>
-            <span>Gregorio registra los pagos</span>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="estado-conexion">
-        <span class="punto-conexion"></span>
-        Sistema disponible
-      </div>
 
     </section>
   </main>
@@ -144,7 +145,7 @@ formLogin.addEventListener("submit", async (evento) => {
 
   try {
     const respuesta = await fetch(
-      "http://localhost:8080/api/auth/login",
+      `${API_URL}/auth/login`,
       {
         method: "POST",
 
@@ -201,32 +202,3 @@ formLogin.addEventListener("submit", async (evento) => {
   }
 });
 
-if ("serviceWorker" in navigator) {
-
-    window.addEventListener(
-        "load",
-        async () => {
-
-            try {
-                const registro =
-                    await navigator
-                        .serviceWorker
-                        .register(
-                            "/service-worker.js"
-                        );
-
-                console.log(
-                    "Service Worker registrado:",
-                    registro.scope
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "No se pudo registrar el Service Worker:",
-                    error
-                );
-            }
-        }
-    );
-}

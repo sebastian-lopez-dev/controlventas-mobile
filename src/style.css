@@ -1,3 +1,7 @@
+/* ========================================
+   00. CONFIGURACIÓN GENERAL
+======================================== */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,35 +9,29 @@
 }
 
 :root {
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
   color: #172033;
-  background: #eef3fa;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
 body {
   min-width: 320px;
-  min-height: 100vh;
-  background:
-    radial-gradient(
-      circle at top left,
-      rgba(43, 103, 246, 0.18),
-      transparent 38%
-    ),
-    radial-gradient(
-      circle at bottom right,
-      rgba(18, 184, 134, 0.14),
-      transparent 35%
-    ),
-    #eef3fa;
+  min-height: 100dvh;
+  background: #ffffff;
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -42,159 +40,171 @@ button {
 }
 
 #app {
-  min-height: 100vh;
+  min-height: 100dvh;
+  background: #ffffff;
 }
+
+/* Vista de celular dentro de una computadora */
+
+@media (min-width: 701px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  #app {
+    width: 430px;
+    height: calc(100dvh - 40px);
+    min-height: 780px;
+    max-height: 900px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 25px 60px rgba(20, 42, 80, 0.25);
+  }
+}
+
+/* Pantalla completa en un celular real */
+
+@media (max-width: 700px) {
+  body {
+    background: #ffffff;
+  }
+
+  #app,
+  .aplicacion-movil {
+    width: 100%;
+    min-height: 100dvh;
+  }
+}
+
+/* ========================================
+   01. LOGIN
+======================================== */
 
 .pagina-login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 28px 18px;
-}
-
-.login-contenedor {
+  display: grid;
   width: 100%;
-  max-width: 430px;
-  padding: 34px 30px 25px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(210, 221, 237, 0.9);
-  border-radius: 28px;
-  box-shadow:
-    0 24px 70px rgba(23, 52, 94, 0.16),
-    0 4px 14px rgba(23, 52, 94, 0.08);
+  min-height: 100dvh;
+  padding: clamp(14px, 4vw, 24px);
+  background: #ffffff;
+  place-items: center;
 }
 
-.marca {
+.pagina-login .login-contenedor {
+  width: min(100%, 410px);
+  padding: clamp(28px, 7vw, 42px) clamp(20px, 6vw, 32px);
+  background: #ffffff;
+  
+}
+
+/* Logo y nombre del negocio */
+
+.pagina-login .marca {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 13px;
+  margin-bottom: 28px;
+  text-align: center;
 }
 
-.marca-icono {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
-  color: #ffffff;
-  font-size: 17px;
+.pagina-login .marca-logo {
+  display: block;
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  filter: drop-shadow(0 8px 12px rgba(25, 61, 119, 0.15));
+}
+
+.pagina-login .marca h2 {
+  color: #071b3a;
+  font-size: clamp(22px, 6vw, 26px);
   font-weight: 800;
-  letter-spacing: -1px;
-  background: linear-gradient(
-    145deg,
-    #356ff4,
-    #1748c7
-  );
-  border-radius: 16px;
-  box-shadow: 0 9px 22px rgba(39, 93, 221, 0.27);
-}
-
-.marca h2 {
-  color: #15213a;
-  font-size: 21px;
   line-height: 1.2;
 }
 
-.marca p {
-  margin-top: 3px;
-  color: #738097;
-  font-size: 14px;
+/* Título de bienvenida */
+
+.pagina-login .presentacion {
+  margin-bottom: 26px;
+  text-align: center;
 }
 
-.etiqueta-negocio {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 24px;
-  padding: 7px 12px;
-  color: #2355c7;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  background: #edf3ff;
-  border: 1px solid #dbe7ff;
-  border-radius: 999px;
-}
-
-.presentacion {
-  margin-top: 18px;
-}
-
-.presentacion h1 {
-  color: #14213a;
-  font-size: 34px;
+.pagina-login .presentacion h1 {
+  color: #2563eb;
+  font-size: clamp(30px, 8vw, 36px);
+  font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -1px;
 }
 
-.presentacion p {
-  max-width: 340px;
-  margin-top: 9px;
-  color: #6c788d;
-  font-size: 15px;
-  line-height: 1.55;
-}
+/* Formulario de acceso */
 
-.formulario-login {
+.pagina-login .formulario-login {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin-top: 27px;
+  width: 100%;
 }
 
-.campo {
+.pagina-login .campo {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
-.campo label {
-  color: #344158;
+.pagina-login .campo label {
+  color: #0d2242;
   font-size: 14px;
   font-weight: 700;
 }
 
-.campo input {
+.pagina-login .campo input {
   width: 100%;
-  height: 51px;
-  padding: 0 15px;
-  color: #1d293d;
-  font-size: 15px;
-  background: #f8faff;
-  border: 1px solid #d9e1ed;
-  border-radius: 13px;
+  min-height: 54px;
+  padding: 0 16px;
+  color: #0b1e3d;
+  font-size: 16px;
+  background: #ffffff;
+  border: 1px solid #cfdaea;
+  border-radius: 14px;
   outline: none;
   transition:
+    background 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
+    box-shadow 0.2s ease;
 }
 
-.campo input::placeholder {
-  color: #9aa5b7;
+.pagina-login .campo input::placeholder {
+  color: #9aa9c2;
 }
 
-.campo input:focus {
+.pagina-login .campo input:focus {
   background: #ffffff;
-  border-color: #3471f5;
-  box-shadow: 0 0 0 4px rgba(52, 113, 245, 0.12);
+  border-color: #326cf0;
+  box-shadow: 0 0 0 4px rgba(50, 108, 240, 0.12);
 }
 
-.campo-contrasena {
+/* Campo de contraseña */
+
+.pagina-login .campo-contrasena {
   position: relative;
 }
 
-.campo-contrasena input {
-  padding-right: 82px;
+.pagina-login .campo-contrasena input {
+  padding-right: 72px;
 }
 
-.btn-mostrar {
+.pagina-login .btn-mostrar {
   position: absolute;
   top: 50%;
-  right: 8px;
+  right: 9px;
   padding: 8px 10px;
   color: #2c60d1;
   font-size: 13px;
@@ -205,259 +215,149 @@ button {
   transform: translateY(-50%);
 }
 
-.btn-mostrar:hover {
+.pagina-login .btn-mostrar:hover {
   background: #eaf1ff;
 }
 
-.mensaje-login {
+/* Mensajes del login */
+
+.pagina-login .mensaje-login {
   min-height: 18px;
-  margin-top: -7px;
+  margin: -4px 0 -6px;
   color: #247054;
   font-size: 13px;
   font-weight: 600;
   text-align: center;
 }
 
-.btn-ingresar {
-  width: 100%;
-  height: 52px;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 750;
-  background: linear-gradient(
-    135deg,
-    #3473f5,
-    #1d51d1
-  );
-  border: 0;
-  border-radius: 14px;
-  box-shadow: 0 11px 25px rgba(38, 91, 218, 0.25);
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.btn-ingresar:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 29px rgba(38, 91, 218, 0.32);
-}
-
-.btn-ingresar:active {
-  transform: translateY(1px);
-}
-
-.usuarios-aplicacion {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 25px;
-  padding-top: 21px;
-  border-top: 1px solid #e8edf4;
-}
-
-.usuario-tipo {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  min-width: 0;
-  padding: 11px;
-  background: #f8faff;
-  border: 1px solid #e6ebf3;
-  border-radius: 13px;
-}
-
-.usuario-icono {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 800;
-  border-radius: 10px;
-}
-
-.usuario-icono.administrador {
-  background: #2e68eb;
-}
-
-.usuario-icono.cobrador {
-  background: #16a479;
-}
-
-.usuario-tipo div:last-child {
-  min-width: 0;
-}
-
-.usuario-tipo strong {
-  display: block;
-  overflow: hidden;
-  color: #283650;
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.usuario-tipo span {
-  display: block;
-  margin-top: 2px;
-  overflow: hidden;
-  color: #8792a5;
-  font-size: 10px;
-  line-height: 1.3;
-}
-
-.estado-conexion {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-  margin-top: 22px;
-  color: #788497;
-  font-size: 12px;
-}
-
-.punto-conexion {
-  width: 8px;
-  height: 8px;
-  background: #1cb785;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(28, 183, 133, 0.12);
-}
-
-@media (max-width: 480px) {
-  body {
-    background: #ffffff;
-  }
-
-  .pagina-login {
-    align-items: flex-start;
-    padding: 0;
-  }
-
-  .login-contenedor {
-    min-height: 100vh;
-    max-width: none;
-    padding:
-      max(30px, env(safe-area-inset-top))
-      22px
-      max(22px, env(safe-area-inset-bottom));
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .presentacion h1 {
-    font-size: 31px;
-  }
-
-  .usuarios-aplicacion {
-    grid-template-columns: 1fr;
-  }
-
-  .usuario-tipo span {
-    font-size: 11px;
-  }
-}
-
-.mensaje-login.error {
+.pagina-login .mensaje-login.error {
   color: #d83b4b;
 }
 
-.btn-ingresar:disabled {
+/* Botón para ingresar */
+
+.pagina-login .btn-ingresar {
+  width: 100%;
+  min-height: 54px;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3776f5, #2455d6);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(37, 86, 218, 0.24);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.pagina-login .btn-ingresar:hover {
+  box-shadow: 0 15px 29px rgba(37, 86, 218, 0.3);
+  transform: translateY(-1px);
+}
+
+.pagina-login .btn-ingresar:active {
+  transform: scale(0.98);
+}
+
+.pagina-login .btn-ingresar:disabled {
   cursor: not-allowed;
-  opacity: 0.75;
+  opacity: 0.7;
   transform: none;
 }
 
+/* Ajustes del login para pantallas pequeñas */
+
+@media (max-width: 700px) {
+  .pagina-login {
+    padding: max(14px, env(safe-area-inset-top)) 14px
+      max(14px, env(safe-area-inset-bottom));
+  }
+
+  .pagina-login .login-contenedor {
+    padding: 30px 24px;
+    border-radius: 28px;
+  }
+}
+
+@media (max-width: 380px) {
+  .pagina-login {
+    padding: 10px;
+  }
+
+  .pagina-login .login-contenedor {
+    padding: 25px 18px;
+    border-radius: 24px;
+  }
+
+  .pagina-login .marca {
+    margin-bottom: 22px;
+  }
+
+  .pagina-login .marca-logo {
+    width: 82px;
+    height: 82px;
+  }
+
+  .pagina-login .presentacion {
+    margin-bottom: 22px;
+  }
+}
+
+@media (max-height: 700px) {
+  .pagina-login {
+    place-items: start center;
+  }
+
+  .pagina-login .login-contenedor {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+
+  .pagina-login .marca {
+    margin-bottom: 20px;
+  }
+
+  .pagina-login .marca-logo {
+    width: 76px;
+    height: 76px;
+  }
+
+  .pagina-login .presentacion {
+    margin-bottom: 20px;
+  }
+}
+
 /* ========================================
-   APLICACIÓN PRINCIPAL
+   02. APLICACIÓN PRINCIPAL
 ======================================== */
 
 .aplicacion-movil {
   width: 100%;
-  max-width: 470px;
-  min-height: 100vh;
-  margin: 0 auto;
-  overflow: hidden;
+  min-height: 100%;
+  overflow-x: hidden;
   background: #f4f7fb;
-  box-shadow: 0 0 50px rgba(30, 56, 95, 0.13);
 }
 
-.cabecera-aplicacion {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 76px;
-  padding:
-    max(14px, env(safe-area-inset-top))
-    19px
-    14px;
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid #e4eaf3;
-  backdrop-filter: blur(12px);
-}
-
-.cabecera-marca {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-pequeno {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 42px;
-  height: 42px;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #3474f4,
-    #1d50d1
-  );
-  border-radius: 13px;
-  box-shadow: 0 7px 17px rgba(41, 96, 225, 0.25);
-}
-
-.logo-pequeno.verde {
-  background: linear-gradient(
-    135deg,
-    #23bd8c,
-    #0d916b
-  );
-  box-shadow: 0 7px 17px rgba(16, 155, 113, 0.25);
-}
-
-.cabecera-marca span {
-  display: block;
-  color: #17233b;
-  font-size: 16px;
-  font-weight: 800;
-}
-
-.cabecera-marca small {
-  display: block;
-  margin-top: 2px;
-  color: #8590a3;
-  font-size: 11px;
-}
+/* Botón para cerrar sesión */
 
 .btn-cerrar-sesion {
-  padding: 8px 12px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  padding: 9px 14px;
+
   color: #526077;
   font-size: 12px;
   font-weight: 700;
+
   background: #f1f4f8;
   border: 1px solid #e1e7f0;
   border-radius: 10px;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .btn-cerrar-sesion:hover {
@@ -466,9 +366,26 @@ button {
   border-color: #ffd6da;
 }
 
+/* Contenido de la pantalla principal */
+
 .contenido-inicio {
-  min-height: calc(100vh - 150px);
-  padding: 24px 18px 105px;
+  width: 100%;
+  min-height: 100%;
+  padding: 28px 18px 35px;
+}
+
+/* Saludo y botón salir */
+
+.saludo-con-salida {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.saludo-usuario {
+  min-width: 0;
 }
 
 .saludo-usuario p {
@@ -478,21 +395,16 @@ button {
 
 .saludo-usuario h1 {
   margin-top: 2px;
+
+  overflow: hidden;
   color: #16223a;
+
   font-size: 28px;
+  font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.7px;
-}
 
-.saludo-usuario span {
-  display: inline-block;
-  margin-top: 7px;
-  padding: 5px 10px;
-  color: #2c61d1;
-  font-size: 11px;
-  font-weight: 750;
-  background: #eaf1ff;
-  border-radius: 999px;
+  text-overflow: ellipsis;
 }
 
 /* Tarjeta de ruta del administrador */
@@ -512,11 +424,7 @@ button {
       rgba(255, 255, 255, 0.21),
       transparent 38%
     ),
-    linear-gradient(
-      135deg,
-      #3474f4,
-      #1b4cc5
-    );
+    linear-gradient(135deg, #3474f4, #1b4cc5);
   border-radius: 21px;
   box-shadow: 0 14px 32px rgba(37, 86, 205, 0.24);
 }
@@ -685,11 +593,7 @@ button {
       rgba(255, 255, 255, 0.22),
       transparent 39%
     ),
-    linear-gradient(
-      135deg,
-      #1cb885,
-      #0c8d68
-    );
+    linear-gradient(135deg, #1cb885, #0c8d68);
   border-radius: 21px;
   box-shadow: 0 14px 32px rgba(16, 146, 106, 0.23);
 }
@@ -784,65 +688,6 @@ button {
   text-align: center;
 }
 
-/* Navegación inferior */
-
-.navegacion-inferior {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 30;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 470px;
-  min-height: 72px;
-  margin: 0 auto;
-  padding:
-    8px
-    8px
-    max(8px, env(safe-area-inset-bottom));
-  background: rgba(255, 255, 255, 0.97);
-  border-top: 1px solid #e1e7f0;
-  box-shadow: 0 -6px 24px rgba(34, 55, 88, 0.07);
-  backdrop-filter: blur(12px);
-}
-
-.navegacion-inferior button {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  min-width: 0;
-  padding: 3px;
-  color: #929cad;
-  font-size: 10px;
-  font-weight: 650;
-  background: transparent;
-  border: 0;
-  border-radius: 10px;
-}
-
-.navegacion-inferior button span {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 23px;
-  color: inherit;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.navegacion-inferior button:hover {
-  background: #f1f5fb;
-}
-
-.navegacion-inferior button.navegacion-activa {
-  color: #2861df;
-}
-
 /* Adaptación para celular */
 
 @media (max-width: 480px) {
@@ -855,14 +700,10 @@ button {
     padding-right: 15px;
     padding-left: 15px;
   }
-
-  .navegacion-inferior {
-    max-width: none;
-  }
 }
 
 /* ========================================
-   PANTALLA COBROS DE HOY
+   03. PANTALLA COBROS DE HOY
 ======================================== */
 
 .cabecera-pagina {
@@ -874,10 +715,7 @@ button {
   align-items: center;
   gap: 12px;
   min-height: 76px;
-  padding:
-    max(13px, env(safe-area-inset-top))
-    17px
-    13px;
+  padding: max(13px, env(safe-area-inset-top)) 17px 13px;
   background: rgba(255, 255, 255, 0.97);
   border-bottom: 1px solid #e3e9f1;
   backdrop-filter: blur(12px);
@@ -1258,21 +1096,13 @@ button {
 .btn-cobrar-cliente {
   flex: 1.2;
   color: #ffffff;
-  background: linear-gradient(
-    135deg,
-    #20b783,
-    #0f916b
-  );
+  background: linear-gradient(135deg, #20b783, #0f916b);
   border: 0;
   box-shadow: 0 7px 16px rgba(16, 149, 109, 0.2);
 }
 
 .btn-cobrar-cliente:hover {
-  background: linear-gradient(
-    135deg,
-    #19a978,
-    #087d5c
-  );
+  background: linear-gradient(135deg, #19a978, #087d5c);
 }
 
 @media (max-width: 360px) {
@@ -1291,7 +1121,7 @@ button {
 }
 
 /* ========================================
-   PANTALLA DE CLIENTES
+   04. PANTALLA DE CLIENTES
 ======================================== */
 
 .cabecera-con-accion {
@@ -1308,11 +1138,7 @@ button {
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    #3473f3,
-    #2053d0
-  );
+  background: linear-gradient(135deg, #3473f3, #2053d0);
   border: 0;
   border-radius: 10px;
   box-shadow: 0 6px 14px rgba(39, 91, 216, 0.2);
@@ -1396,11 +1222,7 @@ button {
   color: #ffffff;
   font-size: 14px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #4b7df2,
-    #2859cd
-  );
+  background: linear-gradient(135deg, #4b7df2, #2859cd);
   border-radius: 14px;
 }
 
@@ -1495,17 +1317,13 @@ button {
 
 .btn-crear-contrato {
   color: #ffffff;
-  background: linear-gradient(
-    135deg,
-    #3472ee,
-    #2254cc
-  );
+  background: linear-gradient(135deg, #3472ee, #2254cc);
   border: 0;
   box-shadow: 0 6px 14px rgba(37, 85, 203, 0.2);
 }
 
 /* ========================================
-   FORMULARIO DE CLIENTE
+   05. FORMULARIO DE CLIENTE
 ======================================== */
 
 .contenido-formulario {
@@ -1612,11 +1430,7 @@ button {
   color: #ffffff;
   font-size: 14px;
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    #3473f3,
-    #2052cc
-  );
+  background: linear-gradient(135deg, #3473f3, #2052cc);
   border: 0;
   border-radius: 13px;
   box-shadow: 0 9px 20px rgba(38, 88, 211, 0.22);
@@ -1647,11 +1461,7 @@ button {
   color: #ffffff;
   font-size: 29px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #22bb88,
-    #0f916a
-  );
+  background: linear-gradient(135deg, #22bb88, #0f916a);
   border-radius: 50%;
   box-shadow: 0 9px 20px rgba(17, 151, 110, 0.22);
 }
@@ -1696,7 +1506,7 @@ button {
 }
 
 /* ========================================
-   PANTALLA DE PRODUCTOS
+   06. PANTALLA DE PRODUCTOS
 ======================================== */
 
 .contenido-productos {
@@ -1967,22 +1777,14 @@ button {
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    #3472ee,
-    #2254cc
-  );
+  background: linear-gradient(135deg, #3472ee, #2254cc);
   border: 0;
   border-radius: 11px;
   box-shadow: 0 7px 15px rgba(37, 85, 203, 0.18);
 }
 
 .btn-seleccionar-producto:hover {
-  background: linear-gradient(
-    135deg,
-    #2865e3,
-    #1947bb
-  );
+  background: linear-gradient(135deg, #2865e3, #1947bb);
 }
 
 @media (max-width: 370px) {
@@ -2005,7 +1807,7 @@ button {
 }
 
 /* ========================================
-   PANTALLA DE SALIDAS
+   07. PANTALLA DE SALIDAS
 ======================================== */
 
 .contenido-salidas {
@@ -2244,9 +2046,7 @@ button {
   text-align: center;
 }
 
-.detalle-producto-salida
-  > div:not(:first-child)
-  span {
+.detalle-producto-salida > div:not(:first-child) span {
   display: block;
   color: #9aa4b4;
   font-size: 7px;
@@ -2267,11 +2067,7 @@ button {
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
-  background: linear-gradient(
-    135deg,
-    #3472ee,
-    #2254cc
-  );
+  background: linear-gradient(135deg, #3472ee, #2254cc);
   border: 0;
   border-radius: 11px;
   box-shadow: 0 7px 15px rgba(37, 85, 203, 0.18);
@@ -2362,7 +2158,7 @@ button {
 }
 
 /* ========================================
-   CONTRATO DIGITAL
+   08. CONTRATO DIGITAL
 ======================================== */
 
 .salida-contrato {
@@ -2374,11 +2170,7 @@ button {
       rgba(255, 255, 255, 0.2),
       transparent 40%
     ),
-    linear-gradient(
-      135deg,
-      #3473f2,
-      #2151c7
-    );
+    linear-gradient(135deg, #3473f2, #2151c7);
   border-radius: 17px;
   box-shadow: 0 10px 24px rgba(36, 83, 198, 0.2);
 }
@@ -2399,6 +2191,53 @@ button {
   margin-top: 5px;
   font-size: 11px;
   opacity: 0.82;
+}
+
+/* Buscadores de cliente y producto */
+
+.buscador-contrato {
+  position: relative;
+  margin-top: 7px;
+  margin-bottom: 6px;
+}
+
+.buscador-contrato > span {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  z-index: 1;
+  color: #7889a5;
+  font-size: 21px;
+  line-height: 1;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.buscador-contrato input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 14px 0 43px;
+  color: #17233b;
+  background: #ffffff;
+  border: 1px solid #ccd8ea;
+  border-radius: 13px;
+  outline: none;
+}
+
+.buscador-contrato input::placeholder {
+  color: #97a5ba;
+}
+
+.buscador-contrato input:focus {
+  border-color: #3474f4;
+  box-shadow: 0 0 0 3px rgba(52, 116, 244, 0.12);
+}
+
+.resultado-buscador-contrato {
+  min-height: 15px;
+  margin: 0 2px 8px;
+  color: #71809a;
+  font-size: 10px;
 }
 
 /* Cliente y producto seleccionado */
@@ -2549,11 +2388,7 @@ button {
   color: #ffffff;
   font-size: 31px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #22bc88,
-    #0e9069
-  );
+  background: linear-gradient(135deg, #22bc88, #0e9069);
   border-radius: 50%;
   box-shadow: 0 10px 22px rgba(17, 151, 110, 0.23);
 }
@@ -2607,9 +2442,7 @@ button {
   font-size: 12px;
 }
 
-.resumen-contrato-generado
-  > div:last-child
-  strong {
+.resumen-contrato-generado > div:last-child strong {
   color: #12805f;
 }
 
@@ -2628,7 +2461,7 @@ button {
 }
 
 /* ========================================
-   REGISTRAR PAGO
+   09. REGISTRAR PAGO
 ======================================== */
 
 .cliente-pago {
@@ -2652,11 +2485,7 @@ button {
   color: #ffffff;
   font-size: 15px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #20b784,
-    #0e916a
-  );
+  background: linear-gradient(135deg, #20b784, #0e916a);
   border-radius: 16px;
 }
 
@@ -2785,9 +2614,7 @@ button {
   border-radius: 10px;
 }
 
-.calculo-nuevo-saldo
-  .nuevo-saldo
-  strong {
+.calculo-nuevo-saldo .nuevo-saldo strong {
   color: #5de1b2;
 }
 
@@ -2807,11 +2634,7 @@ button {
   color: #ffffff;
   font-size: 14px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #20b783,
-    #0d8e67
-  );
+  background: linear-gradient(135deg, #20b783, #0d8e67);
   border: 0;
   border-radius: 13px;
   box-shadow: 0 9px 20px rgba(16, 148, 107, 0.22);
@@ -2844,11 +2667,7 @@ button {
   color: #ffffff;
   font-size: 31px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #22bd89,
-    #0d8d67
-  );
+  background: linear-gradient(135deg, #22bd89, #0d8d67);
   border-radius: 50%;
   box-shadow: 0 10px 22px rgba(17, 151, 110, 0.24);
 }
@@ -2912,9 +2731,7 @@ button {
   font-size: 11px;
 }
 
-.detalle-pago-registrado
-  > div:nth-child(2)
-  b {
+.detalle-pago-registrado > div:nth-child(2) b {
   color: #12805f;
 }
 
@@ -2933,7 +2750,7 @@ button {
 }
 
 /* ========================================
-   REGISTRAR NO PAGÓ
+   10. REGISTRAR NO PAGÓ
 ======================================== */
 
 .cliente-no-pago {
@@ -2957,11 +2774,7 @@ button {
   color: #ffffff;
   font-size: 15px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #f06d79,
-    #c84150
-  );
+  background: linear-gradient(135deg, #f06d79, #c84150);
   border-radius: 16px;
 }
 
@@ -3042,9 +2855,7 @@ button {
     background 0.18s ease;
 }
 
-.opciones-no-pago label:has(
-  input:checked
-) {
+.opciones-no-pago label:has(input:checked) {
   background: #fff0f2;
   border-color: #ef8893;
   box-shadow: 0 0 0 3px rgba(224, 77, 92, 0.08);
@@ -3091,11 +2902,7 @@ button {
   color: #ffffff;
   font-size: 14px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #e65c6a,
-    #bd3948
-  );
+  background: linear-gradient(135deg, #e65c6a, #bd3948);
   border: 0;
   border-radius: 13px;
   box-shadow: 0 9px 20px rgba(194, 57, 73, 0.21);
@@ -3128,11 +2935,7 @@ button {
   color: #ffffff;
   font-size: 31px;
   font-weight: 850;
-  background: linear-gradient(
-    135deg,
-    #ed7180,
-    #c13e4d
-  );
+  background: linear-gradient(135deg, #ed7180, #c13e4d);
   border-radius: 50%;
   box-shadow: 0 10px 22px rgba(193, 62, 77, 0.22);
 }
@@ -3192,7 +2995,7 @@ button {
 }
 
 /* ========================================
-   HISTORIAL DE COBRANZA
+   11. HISTORIAL DE COBRANZA
 ======================================== */
 
 .contenido-historial {
@@ -3340,20 +3143,12 @@ button {
 
 .icono-historial.pago {
   color: #ffffff;
-  background: linear-gradient(
-    135deg,
-    #22b984,
-    #0d8d66
-  );
+  background: linear-gradient(135deg, #22b984, #0d8d66);
 }
 
 .icono-historial.visita {
   color: #ffffff;
-  background: linear-gradient(
-    135deg,
-    #ed6c79,
-    #c13d4c
-  );
+  background: linear-gradient(135deg, #ed6c79, #c13d4c);
 }
 
 .datos-historial {
@@ -3367,15 +3162,11 @@ button {
   letter-spacing: 0.5px;
 }
 
-.tarjeta-historial.pago
-  .datos-historial
-  > span {
+.tarjeta-historial.pago .datos-historial > span {
   color: #15805e;
 }
 
-.tarjeta-historial.visita
-  .datos-historial
-  > span {
+.tarjeta-historial.visita .datos-historial > span {
   color: #c33e4c;
 }
 
@@ -3425,7 +3216,7 @@ button {
 }
 
 /* ========================================
-   COBRANZA DEL ADMINISTRADOR
+   12. COBRANZA DEL ADMINISTRADOR
 ======================================== */
 
 .contenido-cobranza-admin {
@@ -3498,23 +3289,19 @@ button {
   box-shadow: 0 5px 14px rgba(37, 57, 89, 0.04);
 }
 
-.resumen-admin-cobranza
-  article:nth-child(1) {
+.resumen-admin-cobranza article:nth-child(1) {
   border-left: 4px solid #3470e8;
 }
 
-.resumen-admin-cobranza
-  article:nth-child(2) {
+.resumen-admin-cobranza article:nth-child(2) {
   border-left: 4px solid #ef9a43;
 }
 
-.resumen-admin-cobranza
-  article:nth-child(3) {
+.resumen-admin-cobranza article:nth-child(3) {
   border-left: 4px solid #18aa79;
 }
 
-.resumen-admin-cobranza
-  article:nth-child(4) {
+.resumen-admin-cobranza article:nth-child(4) {
   border-left: 4px solid #df5867;
 }
 
@@ -3730,290 +3517,1257 @@ button {
 }
 
 /* ========================================
-   CIERRE DE SALIDA
+   13. CIERRE DE SALIDA
 ======================================== */
 
-.acciones-salida-abierta {
-    display: grid;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.btn-cerrar-salida {
-    width: 100%;
-    min-height: 48px;
-    border: 1px solid #fecaca;
-    border-radius: 14px;
-    background: #fff1f2;
-    color: #dc2626;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
 .btn-cerrar-salida:active {
-    transform: scale(0.98);
-    background: #ffe4e6;
+  transform: scale(0.98);
+  background: #ffe4e6;
 }
 
 .resumen-cierre-salida {
-    margin-bottom: 20px;
-    padding: 18px;
-    border: 1px solid #dbe4f0;
-    border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 8px 25px rgba(15, 37, 82, 0.06);
+  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid #dbe4f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(15, 37, 82, 0.06);
 }
 
 .resumen-cierre-salida p {
-    margin: 6px 0;
-    color: #64748b;
-    line-height: 1.5;
+  margin: 6px 0;
+  color: #64748b;
+  line-height: 1.5;
 }
 
 .resumen-cierre-salida strong {
-    color: #0f2552;
+  color: #0f2552;
 }
 
 .lista-conteo-productos {
-    display: grid;
-    gap: 16px;
-    margin-bottom: 22px;
+  display: grid;
+  gap: 16px;
+  margin-bottom: 22px;
 }
 
 .tarjeta-conteo {
-    padding: 18px;
-    border: 1px solid #dbe4f0;
-    border-radius: 20px;
-    background: #ffffff;
-    box-shadow: 0 10px 28px rgba(15, 37, 82, 0.07);
+  padding: 18px;
+  border: 1px solid #dbe4f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 37, 82, 0.07);
 }
 
 .encabezado-producto-conteo {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .encabezado-producto-conteo h3 {
-    margin: 5px 0 0;
-    color: #0f2552;
-    font-size: 17px;
-    line-height: 1.3;
+  margin: 5px 0 0;
+  color: #0f2552;
+  font-size: 17px;
+  line-height: 1.3;
 }
 
 .codigo-producto {
-    color: #2563eb;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.4px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
 }
 
 .stock-esperado {
-    flex-shrink: 0;
-    padding: 7px 10px;
-    border-radius: 10px;
-    background: #eef4ff;
-    color: #1d4ed8;
-    font-size: 12px;
-    font-weight: 700;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: #eef4ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .datos-kardex-cierre {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .datos-kardex-cierre span {
-    padding: 10px 6px;
-    border-radius: 12px;
-    background: #f8fafc;
-    color: #64748b;
-    font-size: 11px;
-    text-align: center;
+  padding: 10px 6px;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+  text-align: center;
 }
 
 .datos-kardex-cierre strong {
-    display: block;
-    margin-top: 3px;
-    color: #0f2552;
-    font-size: 17px;
+  display: block;
+  margin-top: 3px;
+  color: #0f2552;
+  font-size: 17px;
 }
 
 .tarjeta-conteo label {
-    display: block;
-    margin-top: 12px;
-    color: #0f2552;
-    font-size: 13px;
-    font-weight: 700;
+  display: block;
+  margin-top: 12px;
+  color: #0f2552;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .tarjeta-conteo input,
 .tarjeta-conteo textarea {
-    width: 100%;
-    box-sizing: border-box;
-    margin-top: 7px;
-    padding: 13px 14px;
-    border: 1px solid #cbd5e1;
-    border-radius: 13px;
-    background: #f8fafc;
-    color: #0f2552;
-    font-family: inherit;
-    font-size: 15px;
-    outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 7px;
+  padding: 13px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 13px;
+  background: #f8fafc;
+  color: #0f2552;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
 }
 
 .tarjeta-conteo input:focus,
 .tarjeta-conteo textarea:focus {
-    border-color: #2563eb;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .tarjeta-conteo textarea {
-    min-height: 75px;
-    resize: vertical;
+  min-height: 75px;
+  resize: vertical;
 }
 
 .resultado-diferencia {
-    margin-top: 10px;
-    padding: 10px 12px;
-    border-radius: 11px;
-    font-size: 13px;
-    font-weight: 700;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .diferencia-correcta {
-    border: 1px solid #a7f3d0;
-    background: #ecfdf5;
-    color: #047857;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
 }
 
 .diferencia-negativa {
-    border: 1px solid #fecaca;
-    background: #fef2f2;
-    color: #dc2626;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .diferencia-positiva {
-    border: 1px solid #fde68a;
-    background: #fffbeb;
-    color: #b45309;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+  color: #b45309;
 }
 
 .resultado-exitoso {
-    max-width: 420px;
-    margin: 50px auto;
-    padding: 28px 22px;
-    border: 1px solid #dbe4f0;
-    border-radius: 24px;
-    background: #ffffff;
-    text-align: center;
-    box-shadow: 0 15px 40px rgba(15, 37, 82, 0.1);
+  max-width: 420px;
+  margin: 50px auto;
+  padding: 28px 22px;
+  border: 1px solid #dbe4f0;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(15, 37, 82, 0.1);
 }
 
 .resultado-exitoso h1 {
-    margin: 15px 0 8px;
-    color: #0f2552;
+  margin: 15px 0 8px;
+  color: #0f2552;
 }
 
 .resultado-exitoso p {
-    margin-bottom: 24px;
-    color: #64748b;
-    line-height: 1.6;
+  margin-bottom: 24px;
+  color: #64748b;
+  line-height: 1.6;
 }
 
 .icono-exitoso {
-    display: grid;
-    width: 70px;
-    height: 70px;
-    margin: auto;
-    border-radius: 50%;
-    background: #dcfce7;
-    color: #16a34a;
-    font-size: 35px;
-    font-weight: 800;
-    place-items: center;
-}
-
-@media (min-width: 600px) {
-    .acciones-salida-abierta {
-        grid-template-columns: 1fr 1fr;
-    }
+  display: grid;
+  width: 70px;
+  height: 70px;
+  margin: auto;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 35px;
+  font-weight: 800;
+  place-items: center;
 }
 
 /* ========================================
-   BOTÓN PARA INSTALAR LA APLICACIÓN
+   14. BOTÓN PARA INSTALAR LA APLICACIÓN
 ======================================== */
 
 .boton-instalar-app {
-    position: fixed;
-    right: 18px;
-    bottom: calc(
-        18px + env(safe-area-inset-bottom)
-    );
-    z-index: 9999;
+  position: fixed;
+  right: 18px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 9999;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
 
-    min-height: 48px;
-    padding: 11px 18px;
+  min-height: 48px;
+  padding: 11px 18px;
 
-    border: 0;
-    border-radius: 16px;
+  border: 0;
+  border-radius: 16px;
 
-    background: linear-gradient(
-        135deg,
-        #3478f6,
-        #194dcc
-    );
+  background: linear-gradient(135deg, #3478f6, #194dcc);
 
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 750;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    box-shadow:
-        0 12px 30px
-        rgba(37, 99, 235, 0.32);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.32);
 }
 
 .boton-instalar-app:active {
-    transform: scale(0.97);
+  transform: scale(0.97);
 }
 
 .boton-instalar-app:disabled {
-    cursor: wait;
-    opacity: 0.65;
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .boton-instalar-app[hidden] {
-    display: none !important;
+  display: none !important;
 }
 
 .icono-instalar {
-    display: grid;
-    width: 25px;
-    height: 25px;
+  display: grid;
+  width: 25px;
+  height: 25px;
 
-    border-radius: 8px;
+  border-radius: 8px;
 
-    background: rgba(
-        255,
-        255,
-        255,
-        0.18
-    );
+  background: rgba(255, 255, 255, 0.18);
 
-    font-size: 17px;
-    place-items: center;
+  font-size: 17px;
+  place-items: center;
+}
+
+/* ========================================
+   15. ACCIONES DE ADMINISTRACIÓN
+======================================== */
+
+/* Ajustar o retirar productos de una salida */
+
+.acciones-detalle-salida {
+  grid-column: 1 / -1;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #e1e7f0;
+}
+
+.btn-ajustar-carga,
+.btn-retirar-carga {
+  min-height: 38px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 750;
+  border-radius: 10px;
+}
+
+.btn-ajustar-carga {
+  color: #2258ce;
+  background: #edf3ff;
+  border: 1px solid #cfddff;
+}
+
+.btn-retirar-carga {
+  color: #c83242;
+  background: #fff1f2;
+  border: 1px solid #ffcfd4;
+}
+
+.resumen-ajuste-carga {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.resumen-ajuste-carga div {
+  padding: 14px;
+  text-align: center;
+  background: #f3f6fb;
+  border-radius: 13px;
+}
+
+.resumen-ajuste-carga span {
+  display: block;
+  color: #8290a5;
+  font-size: 11px;
+}
+
+.resumen-ajuste-carga strong {
+  display: block;
+  margin-top: 5px;
+  color: #17233b;
+  font-size: 20px;
+}
+
+/* Editar, desactivar o eliminar productos */
+
+.acciones-producto {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e5eaf2;
+}
+
+.btn-editar-producto,
+.btn-eliminar-producto {
+  min-height: 42px;
+  padding: 8px 5px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 11px;
+}
+
+.btn-editar-producto {
+  color: #2258ce;
+  background: #edf3ff;
+  border: 1px solid #cfddff;
+}
+
+.btn-eliminar-producto {
+  color: #cc3041;
+  background: #fff0f2;
+  border: 1px solid #ffc8ce;
+}
+
+.btn-editar-producto:disabled,
+.btn-eliminar-producto:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.aviso-accion.error {
+  color: #d23646;
+}
+
+/* Editar o eliminar clientes */
+
+.acciones-cliente {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #e5eaf2;
+}
+
+.btn-editar-cliente,
+.btn-eliminar-cliente {
+  min-height: 44px;
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 11px;
+}
+
+.btn-editar-cliente {
+  color: #2258ce;
+  background: #edf3ff;
+  border: 1px solid #cfddff;
+}
+
+.btn-eliminar-cliente {
+  color: #cc3041;
+  background: #fff0f2;
+  border: 1px solid #ffc8ce;
+}
+
+.btn-editar-cliente:disabled,
+.btn-eliminar-cliente:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Listado y eliminación de contratos */
+
+.contenido-contratos {
+  padding: 22px 16px 35px;
+}
+
+.lista-contratos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.tarjeta-contrato-lista {
+  padding: 17px;
+  background: #ffffff;
+  border: 1px solid #e1e8f2;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(34, 55, 88, 0.06);
+}
+
+.contrato-lista-encabezado {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contrato-lista-encabezado span {
+  color: #2862df;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.contrato-lista-encabezado h2 {
+  margin-top: 4px;
+  color: #17243c;
+  font-size: 16px;
+}
+
+.contrato-lista-encabezado p {
+  margin-top: 4px;
+  color: #8793a7;
+  font-size: 11px;
+}
+
+.estado-contrato-lista {
+  align-self: flex-start;
+  padding: 6px 9px;
+  color: #087c5a;
+  font-size: 10px;
+  background: #def7ed;
+  border-radius: 999px;
+}
+
+.producto-contrato-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #e7ecf3;
+}
+
+.producto-contrato-lista span,
+.resumen-contrato-lista span {
+  color: #8995a8;
+  font-size: 10px;
+}
+
+.producto-contrato-lista strong {
+  color: #27354d;
+  font-size: 13px;
+}
+
+.resumen-contrato-lista {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 13px;
+}
+
+.resumen-contrato-lista div {
+  padding: 11px;
+  background: #f4f7fb;
+  border-radius: 11px;
+}
+
+.resumen-contrato-lista strong {
+  display: block;
+  margin-top: 4px;
+  color: #1d4fca;
+  font-size: 14px;
+}
+
+.btn-eliminar-contrato {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  color: #d02f40;
+  font-size: 13px;
+  font-weight: 800;
+  background: #fff0f2;
+  border: 1px solid #ffc5cc;
+  border-radius: 11px;
+}
+
+.btn-eliminar-contrato:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.acciones-contrato-lista {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.acciones-contrato-lista > :only-child {
+  grid-column: 1 / -1;
+}
+
+.btn-ver-detalle-contrato {
+  width: 100%;
+  min-height: 44px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3474f4, #245bd7);
+  border: 1px solid #2b63db;
+  border-radius: 11px;
+  box-shadow: 0 7px 16px rgba(43, 99, 219, 0.18);
+}
+
+.acciones-contrato-lista .btn-eliminar-contrato {
+  margin-top: 0;
+}
+
+.btn-ver-detalle-contrato:active {
+  transform: translateY(1px);
+}
+
+/* Detalle completo del contrato */
+
+.contenido-detalle-contrato {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 16px 100px;
+}
+
+.detalle-contrato-portada {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #3978f2, #2858cd);
+  border-radius: 17px;
+  box-shadow: 0 10px 22px rgba(40, 88, 205, 0.2);
+}
+
+.detalle-contrato-portada > div > span {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.detalle-contrato-portada h2 {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.detalle-contrato-portada p {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+
+.detalle-contrato-portada .estado-contrato-lista {
+  flex-shrink: 0;
+  color: #087c5a;
+  background: #e1faef;
+}
+
+.detalle-contrato-bloque {
+  padding: 17px;
+  background: #ffffff;
+  border: 1px solid #e1e8f2;
+  border-radius: 17px;
+  box-shadow: 0 5px 16px rgba(34, 55, 88, 0.05);
+}
+
+.titulo-detalle-contrato {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.titulo-detalle-contrato > span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: #285ed5;
+  font-size: 13px;
+  font-weight: 900;
+  background: #edf3ff;
+  border-radius: 10px;
+}
+
+.titulo-detalle-contrato h2 {
+  color: #17243c;
+  font-size: 15px;
+}
+
+.titulo-detalle-contrato p {
+  margin-top: 2px;
+  color: #8a96a9;
+  font-size: 10px;
+}
+
+.nombre-cliente-detalle {
+  margin-bottom: 12px;
+  color: #17243c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.detalle-datos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.dato-detalle,
+.dato-detalle-ancho,
+.monto-detalle {
+  min-width: 0;
+  padding: 11px;
+  background: #f5f7fb;
+  border-radius: 11px;
+}
+
+.dato-detalle-ancho {
+  margin-top: 9px;
+}
+
+.dato-detalle span,
+.dato-detalle-ancho span,
+.monto-detalle span {
+  display: block;
+  color: #8995a8;
+  font-size: 9px;
+}
+
+.dato-detalle strong,
+.dato-detalle-ancho strong,
+.monto-detalle strong {
+  display: block;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  color: #26344c;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.lista-productos-contrato-detalle,
+.lista-cuotas-contrato-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.producto-contrato-detalle,
+.cuota-contrato-detalle {
+  padding: 13px;
+  background: #f7f9fc;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+}
+
+.producto-contrato-detalle > span {
+  color: #2b62da;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.producto-contrato-detalle h3 {
+  margin-top: 4px;
+  color: #17243c;
+  font-size: 13px;
+}
+
+.producto-contrato-detalle > p {
+  margin-top: 10px;
+  color: #718097;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.producto-detalle-numeros {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr 1.15fr;
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.producto-detalle-numeros .dato-detalle {
+  padding: 9px;
+  background: #ffffff;
+}
+
+.resumen-financiero-contrato {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.monto-detalle strong {
+  color: #1f56d0;
+  font-size: 13px;
+}
+
+.monto-detalle.destacado {
+  background: #eaf1ff;
+}
+
+.monto-detalle.destacado strong {
+  color: #1549c0;
+}
+
+.detalle-condiciones-contrato {
+  margin-top: 12px;
+}
+
+.firma-cliente-detalle {
+  display: grid;
+  place-items: center;
+  min-height: 120px;
+  padding: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px dashed #cfd9e8;
+  border-radius: 12px;
+}
+
+.firma-cliente-detalle img {
+  display: block;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+}
+
+.cuota-detalle-encabezado {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cuota-detalle-encabezado > div > span {
+  display: block;
+  color: #2b62da;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.cuota-detalle-encabezado > div > strong {
+  display: block;
+  margin-top: 4px;
+  color: #26344c;
+  font-size: 11px;
+}
+
+.estado-cuota-detalle {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  color: #ad6800;
+  font-size: 9px;
+  background: #fff1d6;
+  border-radius: 999px;
+}
+
+.estado-cuota-detalle.pagada {
+  color: #087c5a;
+  background: #def7ed;
+}
+
+.estado-cuota-detalle.parcial {
+  color: #1d58c9;
+  background: #e5eeff;
+}
+
+.estado-cuota-detalle.vencida {
+  color: #c62d3e;
+  background: #ffe5e8;
+}
+
+.cuota-detalle-montos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.cuota-detalle-montos .monto-detalle {
+  padding: 9px;
+  background: #ffffff;
+}
+
+.cuota-detalle-montos .monto-detalle strong {
+  font-size: 11px;
+}
+
+.detalle-vacio {
+  padding: 16px;
+  color: #7e8ba0;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+  background: #f6f8fb;
+  border: 1px dashed #d7dfeb;
+  border-radius: 11px;
+}
+
+#mensajeContratos.error {
+  color: #d02f40;
+}
+
+/* ========================================
+   16. CARGA TOTAL Y REGRESO DE LA RUTA
+======================================== */
+
+/* Botones principales de la salida abierta */
+
+.acciones-salida-abierta {
+  display: grid;
+  grid-template-columns: 1fr !important;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn-agregar-todo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 78px;
+  padding: 14px 18px;
+  color: #ffffff;
+  text-align: left;
+  background: linear-gradient(135deg, #3478f6, #1f4fd1);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 10px 22px rgba(37, 91, 218, 0.28);
+  cursor: pointer;
+}
+
+.btn-agregar-todo:active,
+.btn-confirmar-cierre-salida:active {
+  transform: scale(0.985);
+}
+
+.btn-accion-icono {
+  display: grid;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  margin: 0 !important;
+  font-size: 27px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  place-items: center;
+}
+
+.btn-agregar-todo > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.btn-agregar-todo strong {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.btn-agregar-todo small {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 10px;
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.btn-cerrar-salida {
+  min-height: 54px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 800;
+  background: #fff5f5;
+  border: 1px solid #fda4af;
+  border-radius: 15px;
+}
+
+/* Selección automática de mercadería */
+
+.resumen-carga-automatica {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+  margin-bottom: 13px;
+}
+
+.resumen-carga-automatica > div {
+  padding: 12px;
+  background: #eef4ff;
+  border: 1px solid #d7e5ff;
+  border-radius: 13px;
+}
+
+.resumen-carga-automatica span {
+  display: block;
+  color: #71809a;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.resumen-carga-automatica strong {
+  display: block;
+  margin-top: 5px;
+  color: #1556d8;
+  font-size: 20px;
+  font-weight: 850;
+}
+
+.producto-para-salida {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px;
+  padding: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #dfe7f2 !important;
+  transition: 0.2s ease;
+}
+
+.controles-producto-carga {
+  display: grid;
+  grid-template-columns: 64px 68px;
+  align-items: center;
+  gap: 7px;
+}
+
+.controles-producto-carga input {
+  width: 64px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+}
+
+.btn-quitar-producto-carga {
+  min-height: 40px;
+  padding: 7px 9px;
+  color: #dc2626;
+  font-size: 10px;
+  font-weight: 750;
+  background: #fff5f5;
+  border: 1px solid #fda4af;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-quitar-producto-carga.agregar {
+  color: #087a58;
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+}
+
+.producto-carga-excluido {
+  background: #f7f8fb !important;
+  border-style: dashed !important;
+  opacity: 0.62;
+}
+
+.producto-carga-excluido input {
+  color: #94a3b8 !important;
+  background: #eef1f5 !important;
+}
+
+/* Pantalla de conteo al regresar de la ruta */
+
+.aviso-conteo-salida {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px;
+  color: #174bba;
+  background: #edf4ff;
+  border: 1px solid #c9dcff;
+  border-radius: 16px;
+}
+
+.aviso-conteo-salida > div {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  font-size: 25px;
+  background: #ffffff;
+  border-radius: 13px;
+  place-items: center;
+}
+
+.aviso-conteo-salida h2 {
+  margin: 0 0 4px;
+  color: #1556d8;
+  font-size: 14px;
+}
+
+.aviso-conteo-salida p {
+  margin: 0;
+  color: #597096;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.resumen-ruta-cierre {
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  border-radius: 16px;
+  box-shadow: 0 7px 18px rgba(23, 35, 59, 0.06);
+}
+
+.resumen-ruta-cierre > span,
+.codigo-producto-conteo {
+  color: #1660e8;
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.resumen-ruta-cierre h2 {
+  margin: 5px 0 4px;
+  color: #17233b;
+  font-size: 15px;
+}
+
+.resumen-ruta-cierre p {
+  margin: 0;
+  color: #8190a7;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.lista-conteo-salida {
+  display: grid;
+  gap: 12px;
+}
+
+.tarjeta-conteo-salida {
+  padding: 15px;
+  background: #ffffff;
+  border: 1px solid #dfe7f2;
+  border-radius: 17px;
+  box-shadow: 0 7px 18px rgba(23, 35, 59, 0.06);
+}
+
+.tarjeta-conteo-salida h2 {
+  margin: 4px 0 13px;
+  color: #17233b;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.cantidades-conteo-salida {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8edf5;
+}
+
+.cantidades-conteo-salida > div {
+  padding: 9px 6px;
+  text-align: center;
+  background: #f5f7fb;
+  border-radius: 11px;
+}
+
+.cantidades-conteo-salida span {
+  display: block;
+  color: #8190a7;
+  font-size: 8px;
+}
+
+.cantidades-conteo-salida strong {
+  display: block;
+  margin-top: 3px;
+  color: #17233b;
+  font-size: 17px;
+}
+
+.cantidades-conteo-salida > div:last-child strong {
+  color: #1660e8;
+}
+
+.campo-conteo-producto {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.campo-conteo-producto label {
+  margin: 0;
+  color: #61708a;
+  font-size: 9px;
+}
+
+.campo-conteo-producto input {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 5px;
+  padding: 8px 11px;
+  color: #17233b;
+  font-size: 17px;
+  font-weight: 850;
+  text-align: center;
+  background: #f7f9fc;
+  border: 1px solid #ced9e9;
+  border-radius: 11px;
+}
+
+.estado-conteo {
+  min-width: 92px;
+  padding: 10px 9px;
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.estado-conteo.sin-diferencia {
+  color: #087a58;
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+}
+
+.estado-conteo.faltante {
+  color: #dc2626;
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+}
+
+.estado-conteo.sobrante {
+  color: #a35b04;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
+.resumen-final-salida {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 13px 8px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #102952, #072045);
+  border-radius: 15px;
+  box-shadow: 0 9px 20px rgba(12, 36, 77, 0.2);
+}
+
+.resumen-final-salida > div {
+  padding: 0 5px;
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.resumen-final-salida > div:last-child {
+  border-right: 0;
+}
+
+.resumen-final-salida span {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 7px;
+}
+
+.resumen-final-salida strong {
+  display: block;
+  margin-top: 4px;
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.resumen-final-salida .diferencia strong {
+  color: #5ee6ad;
+}
+
+.resumen-final-salida .diferencia strong.con-diferencia {
+  color: #fbbf24;
+}
+
+.ayuda-devolucion-almacen {
+  margin: -3px 0 0;
+  color: #71809a;
+  font-size: 9px;
+  text-align: center;
+}
+
+.btn-confirmar-cierre-salida {
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 14px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 850;
+  background: linear-gradient(135deg, #11b96c, #1768e8);
+  border: 0;
+  border-radius: 15px;
+  box-shadow: 0 10px 22px rgba(22, 111, 185, 0.25);
+  cursor: pointer;
+}
+
+.btn-confirmar-cierre-salida:disabled,
+.btn-agregar-todo:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+@media (max-width: 390px) {
+  .producto-para-salida {
+    grid-template-columns: 1fr !important;
+  }
+
+  .controles-producto-carga {
+    grid-template-columns: 1fr 92px;
+  }
+
+  .controles-producto-carga input {
+    width: 100% !important;
+  }
+
+  .campo-conteo-producto {
+    grid-template-columns: 1fr;
+  }
+
+  .estado-conteo {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

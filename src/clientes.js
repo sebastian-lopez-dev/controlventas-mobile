@@ -1,20 +1,10 @@
 import { apiFetch } from "./api.js";
 
-export async function mostrarClientes(
-  usuario,
-  volverAlInicio
-) {
+export async function mostrarClientes(usuario, volverAlInicio) {
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
-
       <header class="cabecera-pagina">
-        <button
-          type="button"
-          id="btnVolverClientes"
-          class="btn-volver"
-        >
-          ‹
-        </button>
+        <button type="button" id="btnVolverClientes" class="btn-volver">‹</button>
 
         <div class="cabecera-con-accion">
           <div>
@@ -25,24 +15,18 @@ export async function mostrarClientes(
           ${
             usuario.rol === "ADMINISTRADOR"
               ? `
-                <button
-                  type="button"
-                  id="btnNuevoCliente"
-                  class="btn-agregar-cabecera"
-                >
-                  + Nuevo
-                </button>
-              `
+            <button type="button" id="btnNuevoCliente" class="btn-agregar-cabecera">
+              + Nuevo
+            </button>
+          `
               : ""
           }
         </div>
       </header>
 
       <section class="contenido-clientes">
-
         <div class="buscador-cobranza">
           <span>⌕</span>
-
           <input
             type="search"
             id="buscarCliente"
@@ -56,9 +40,7 @@ export async function mostrarClientes(
             <p>Cargando clientes...</p>
           </div>
         </div>
-
       </section>
-
     </main>
   `;
 
@@ -66,18 +48,12 @@ export async function mostrarClientes(
     .querySelector("#btnVolverClientes")
     .addEventListener("click", volverAlInicio);
 
-  const btnNuevoCliente = document.querySelector(
-    "#btnNuevoCliente"
-  );
+  const btnNuevoCliente = document.querySelector("#btnNuevoCliente");
 
   if (btnNuevoCliente) {
     btnNuevoCliente.addEventListener("click", () => {
-      mostrarFormularioCliente(
-        usuario,
-        () => mostrarClientes(
-          usuario,
-          volverAlInicio
-        )
+      mostrarFormularioCliente(null, () =>
+        mostrarClientes(usuario, volverAlInicio),
       );
     });
   }
@@ -87,12 +63,9 @@ export async function mostrarClientes(
 
     renderizarClientes(clientes, usuario);
     activarBuscadorClientes();
-    activarSeleccionCliente(clientes);
-
+    activarAccionesClientes(clientes, usuario, volverAlInicio);
   } catch (error) {
-    document.querySelector(
-      "#listaClientes"
-    ).innerHTML = `
+    document.querySelector("#listaClientes").innerHTML = `
       <div class="error-cobranza">
         <div>!</div>
         <h2>No se pudieron cargar los clientes</h2>
@@ -103,55 +76,39 @@ export async function mostrarClientes(
 }
 
 function renderizarClientes(clientes, usuario) {
-  const lista = document.querySelector(
-    "#listaClientes"
-  );
+  const lista = document.querySelector("#listaClientes");
 
   if (clientes.length === 0) {
     lista.innerHTML = `
       <div class="clientes-vacio">
         <div>👥</div>
         <h2>No hay clientes registrados</h2>
-        <p>
-          Presiona “Nuevo” para registrar
-          al primer cliente.
-        </p>
+        <p>Presiona “Nuevo” para registrar al primer cliente.</p>
       </div>
     `;
-
     return;
   }
 
-  const clientesOrdenados = [...clientes].sort(
-    (clienteA, clienteB) => {
-      if (clienteA.activo === clienteB.activo) {
-        return clienteA.nombres.localeCompare(
-          clienteB.nombres
-        );
-      }
-
-      return clienteA.activo ? -1 : 1;
+  const clientesOrdenados = [...clientes].sort((a, b) => {
+    if (a.activo === b.activo) {
+      return (a.nombres || "").localeCompare(b.nombres || "");
     }
-  );
+
+    return a.activo ? -1 : 1;
+  });
 
   lista.innerHTML = `
     <div class="cantidad-resultados">
-      ${clientes.length}
-      ${clientes.length === 1 ? "cliente" : "clientes"}
+      ${clientes.length} ${clientes.length === 1 ? "cliente" : "clientes"}
     </div>
 
     <div class="lista-clientes">
       ${clientesOrdenados
-        .map((cliente) =>
-          crearTarjetaCliente(cliente, usuario)
-        )
+        .map((cliente) => crearTarjetaCliente(cliente, usuario))
         .join("")}
     </div>
 
-    <p
-      id="mensajeClienteSeleccionado"
-      class="aviso-accion"
-    ></p>
+    <p id="mensajeClientes" class="aviso-accion"></p>
   `;
 }
 
@@ -159,7 +116,7 @@ function crearTarjetaCliente(cliente, usuario) {
   const nombreCompleto = [
     cliente.nombres,
     cliente.apellidoPaterno,
-    cliente.apellidoMaterno
+    cliente.apellidoMaterno,
   ]
     .filter(Boolean)
     .join(" ");
@@ -169,177 +126,137 @@ function crearTarjetaCliente(cliente, usuario) {
     cliente.codigoCliente,
     cliente.dni,
     cliente.zona,
-    cliente.distrito
+    cliente.distrito,
   ]
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
 
-  const iniciales = obtenerIniciales(
-    cliente.nombres,
-    cliente.apellidoPaterno
-  );
+  const iniciales = obtenerIniciales(cliente.nombres, cliente.apellidoPaterno);
 
   return `
     <article
-      class="tarjeta-cliente ${
-        cliente.activo ? "" : "cliente-inactivo"
-      }"
+      class="tarjeta-cliente ${cliente.activo ? "" : "cliente-inactivo"}"
       data-busqueda="${escaparTexto(busqueda)}"
     >
       <div class="cliente-principal">
-
-        <div class="avatar-cliente">
-          ${escaparTexto(iniciales)}
-        </div>
+        <div class="avatar-cliente">${escaparTexto(iniciales)}</div>
 
         <div class="cliente-nombre">
-          <span>
-            ${escaparTexto(
-              cliente.codigoCliente || "SIN CÓDIGO"
-            )}
-          </span>
-
+          <span>${escaparTexto(cliente.codigoCliente || "SIN CÓDIGO")}</span>
           <h2>${escaparTexto(nombreCompleto)}</h2>
-
           <p>
             ${escaparTexto(
-              cliente.zona ||
-              cliente.distrito ||
-              "Zona no registrada"
+              cliente.zona || cliente.distrito || "Zona no registrada",
             )}
           </p>
         </div>
 
-        <span class="estado-cliente ${
-          cliente.activo ? "activo" : "inactivo"
-        }">
+        <span class="estado-cliente ${cliente.activo ? "activo" : "inactivo"}">
           ${cliente.activo ? "Activo" : "Inactivo"}
         </span>
-
       </div>
 
       <div class="cliente-datos">
-
-        <p>
-          <b>DNI:</b>
-          ${escaparTexto(
-            cliente.dni || "No registrado"
-          )}
-        </p>
-
-        <p>
-          <b>Celular:</b>
-          ${escaparTexto(
-            cliente.celular || "No registrado"
-          )}
-        </p>
-
-        <p>
-          <b>Dirección:</b>
-          ${escaparTexto(
-            cliente.direccion || "No registrada"
-          )}
-        </p>
-
+        <p><b>DNI:</b> ${escaparTexto(cliente.dni || "No registrado")}</p>
+        <p><b>Celular:</b> ${escaparTexto(cliente.celular || "No registrado")}</p>
+        <p><b>Dirección:</b> ${escaparTexto(cliente.direccion || "No registrada")}</p>
       </div>
 
-      <div class="acciones-cliente">
+      ${
+        usuario.rol === "ADMINISTRADOR"
+          ? `
+        <div class="acciones-cliente">
+          <button
+            type="button"
+            class="btn-editar-cliente"
+            data-editar-cliente="${cliente.idCliente}"
+          >
+            Editar
+          </button>
 
-        ${
-          cliente.celular
-            ? `
-              <a
-                href="tel:${escaparTexto(
-                  cliente.celular
-                )}"
-                class="btn-llamar-cliente"
-              >
-                Llamar
-              </a>
-            `
-            : ""
-        }
-
-        ${
-          usuario.rol === "ADMINISTRADOR" &&
-          cliente.activo
-            ? `
-              <button
-                type="button"
-                class="btn-crear-contrato"
-                data-seleccionar-cliente="${
-                  cliente.idCliente
-                }"
-              >
-                Crear contrato
-              </button>
-            `
-            : ""
-        }
-
-      </div>
+          <button
+            type="button"
+            class="btn-eliminar-cliente"
+            data-eliminar-cliente="${cliente.idCliente}"
+          >
+            Eliminar
+          </button>
+        </div>
+      `
+          : ""
+      }
     </article>
   `;
 }
 
 function activarBuscadorClientes() {
-  const buscador = document.querySelector(
-    "#buscarCliente"
-  );
+  const buscador = document.querySelector("#buscarCliente");
 
   buscador.addEventListener("input", () => {
-    const texto = buscador.value
-      .trim()
-      .toLowerCase();
+    const texto = buscador.value.trim().toLowerCase();
 
-    document
-      .querySelectorAll(".tarjeta-cliente")
-      .forEach((tarjeta) => {
-        tarjeta.hidden = !tarjeta.dataset.busqueda
-          .includes(texto);
-      });
+    document.querySelectorAll(".tarjeta-cliente").forEach((tarjeta) => {
+      tarjeta.hidden = !tarjeta.dataset.busqueda.includes(texto);
+    });
   });
 }
 
-function activarSeleccionCliente(clientes) {
-  document
-    .querySelectorAll(
-      "[data-seleccionar-cliente]"
-    )
-    .forEach((boton) => {
-      boton.addEventListener("click", () => {
-        const idCliente = Number(
-          boton.dataset.seleccionarCliente
-        );
+function activarAccionesClientes(clientes, usuario, volverAlInicio) {
+  document.querySelectorAll("[data-editar-cliente]").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      const idCliente = Number(boton.dataset.editarCliente);
+      const cliente = clientes.find((item) => item.idCliente === idCliente);
 
-        const cliente = clientes.find(
-          (item) => item.idCliente === idCliente
-        );
-
-        localStorage.setItem(
-          "controlventas_cliente_contrato",
-          JSON.stringify(cliente)
-        );
-
-        const mensaje = document.querySelector(
-          "#mensajeClienteSeleccionado"
-        );
-
-        mensaje.textContent =
-          `${cliente.nombres} fue seleccionado. ` +
-          `La siguiente sección será el contrato.`;
-      });
+      mostrarFormularioCliente(cliente, () =>
+        mostrarClientes(usuario, volverAlInicio),
+      );
     });
+  });
+
+  document.querySelectorAll("[data-eliminar-cliente]").forEach((boton) => {
+    boton.addEventListener("click", async () => {
+      const idCliente = Number(boton.dataset.eliminarCliente);
+      const cliente = clientes.find((item) => item.idCliente === idCliente);
+
+      const nombre = [cliente.nombres, cliente.apellidoPaterno]
+        .filter(Boolean)
+        .join(" ");
+
+      const confirmado = window.confirm(
+        `¿Eliminar definitivamente a ${nombre}?\n\n` +
+          "Esta acción no se puede deshacer.",
+      );
+
+      if (!confirmado) {
+        return;
+      }
+
+      const mensaje = document.querySelector("#mensajeClientes");
+      boton.disabled = true;
+      boton.textContent = "Eliminando...";
+
+      try {
+        await apiFetch(`/clientes/${idCliente}/definitivo`, {
+          method: "DELETE",
+        });
+
+        await mostrarClientes(usuario, volverAlInicio);
+      } catch (error) {
+        mensaje.textContent = error.message;
+        mensaje.classList.add("error");
+        boton.disabled = false;
+        boton.textContent = "Eliminar";
+      }
+    });
+  });
 }
 
-function mostrarFormularioCliente(
-  usuario,
-  volverAClientes
-) {
+function mostrarFormularioCliente(cliente, volverAClientes) {
+  const editando = Boolean(cliente);
+
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
-
       <header class="cabecera-pagina">
         <button
           type="button"
@@ -350,27 +267,22 @@ function mostrarFormularioCliente(
         </button>
 
         <div>
-          <h1>Nuevo cliente</h1>
-          <p>Completa los datos del comprador</p>
+          <h1>${editando ? "Editar cliente" : "Nuevo cliente"}</h1>
+          <p>${editando ? "Actualiza los datos del comprador" : "Completa los datos del comprador"}</p>
         </div>
       </header>
 
       <section class="contenido-formulario">
-
-        <form
-          id="formNuevoCliente"
-          class="formulario-movil"
-        >
-
+        <form id="formCliente" class="formulario-movil">
           <div class="grupo-formulario">
             <h2>Datos personales</h2>
 
             <label>
-              Nombres <b>*</b>
-
+              Nombres
               <input
                 type="text"
                 id="clienteNombres"
+                value="${escaparTexto(cliente?.nombres || "")}"
                 placeholder="Ejemplo: Juan Carlos"
                 required
               >
@@ -378,21 +290,21 @@ function mostrarFormularioCliente(
 
             <div class="fila-formulario">
               <label>
-                Apellido paterno <b>*</b>
-
+                Apellido paterno
                 <input
                   type="text"
                   id="clienteApellidoPaterno"
+                  value="${escaparTexto(cliente?.apellidoPaterno || "")}"
                   required
                 >
               </label>
 
               <label>
                 Apellido materno
-
                 <input
                   type="text"
                   id="clienteApellidoMaterno"
+                  value="${escaparTexto(cliente?.apellidoMaterno || "")}"
                 >
               </label>
             </div>
@@ -400,24 +312,24 @@ function mostrarFormularioCliente(
             <div class="fila-formulario">
               <label>
                 DNI
-
                 <input
                   type="text"
                   id="clienteDni"
                   inputmode="numeric"
                   maxlength="8"
+                  value="${escaparTexto(cliente?.dni || "")}"
                   placeholder="8 números"
                 >
               </label>
 
               <label>
                 Celular
-
                 <input
                   type="tel"
                   id="clienteCelular"
                   inputmode="numeric"
                   maxlength="9"
+                  value="${escaparTexto(cliente?.celular || "")}"
                   placeholder="9 números"
                 >
               </label>
@@ -429,10 +341,10 @@ function mostrarFormularioCliente(
 
             <label>
               Dirección
-
               <input
                 type="text"
                 id="clienteDireccion"
+                value="${escaparTexto(cliente?.direccion || "")}"
                 placeholder="Calle, número, lote o manzana"
               >
             </label>
@@ -440,45 +352,33 @@ function mostrarFormularioCliente(
             <div class="fila-formulario">
               <label>
                 Distrito
-
                 <input
                   type="text"
                   id="clienteDistrito"
+                  value="${escaparTexto(cliente?.distrito || "")}"
                   placeholder="Ejemplo: VMT"
                 >
               </label>
 
               <label>
                 Zona
-
                 <select id="clienteZona">
-                  <option value="">
-                    Seleccionar
-                  </option>
-                  <option value="Tablada">
-                    Tablada
-                  </option>
-                  <option value="VMT">
-                    VMT
-                  </option>
-                  <option value="Pamplona">
-                    Pamplona
-                  </option>
-                  <option value="Otra">
-                    Otra
-                  </option>
+                  <option value="">Seleccionar</option>
+                  <option value="Tablada" ${seleccionado(cliente?.zona, "Tablada")}>Tablada</option>
+                  <option value="VMT" ${seleccionado(cliente?.zona, "VMT")}>VMT</option>
+                  <option value="Pamplona" ${seleccionado(cliente?.zona, "Pamplona")}>Pamplona</option>
+                  <option value="Otra" ${seleccionado(cliente?.zona, "Otra")}>Otra</option>
                 </select>
               </label>
             </div>
 
             <label>
               Referencia
-
               <textarea
                 id="clienteReferencia"
                 rows="3"
                 placeholder="Cerca de, frente a, color de casa..."
-              ></textarea>
+              >${escaparTexto(cliente?.referencia || "")}</textarea>
             </label>
           </div>
 
@@ -487,32 +387,22 @@ function mostrarFormularioCliente(
 
             <label>
               Puesto de trabajo
-
               <input
                 type="text"
                 id="clientePuestoTrabajo"
+                value="${escaparTexto(cliente?.puestoTrabajo || "")}"
                 placeholder="Trabajo o negocio del cliente"
               >
             </label>
           </div>
 
-          <p
-            id="mensajeFormularioCliente"
-            class="mensaje-formulario"
-          ></p>
+          <p id="mensajeFormularioCliente" class="mensaje-formulario"></p>
 
-          <button
-            type="submit"
-            id="btnGuardarCliente"
-            class="btn-guardar-formulario"
-          >
-            Guardar cliente
+          <button type="submit" id="btnGuardarCliente" class="btn-guardar-formulario">
+            ${editando ? "Guardar cambios" : "Guardar cliente"}
           </button>
-
         </form>
-
       </section>
-
     </main>
   `;
 
@@ -521,119 +411,69 @@ function mostrarFormularioCliente(
     .addEventListener("click", volverAClientes);
 
   document
-    .querySelector("#formNuevoCliente")
+    .querySelector("#formCliente")
     .addEventListener("submit", async (evento) => {
       evento.preventDefault();
-
-      await guardarNuevoCliente(
-        usuario,
-        volverAClientes
-      );
+      await guardarCliente(cliente, volverAClientes);
     });
 }
 
-async function guardarNuevoCliente(
-  usuario,
-  volverAClientes
-) {
+async function guardarCliente(clienteEditado, volverAClientes) {
   const dni = obtenerValor("#clienteDni");
-  const celular = obtenerValor(
-    "#clienteCelular"
-  );
-
-  const mensaje = document.querySelector(
-    "#mensajeFormularioCliente"
-  );
+  const celular = obtenerValor("#clienteCelular");
+  const mensaje = document.querySelector("#mensajeFormularioCliente");
 
   if (dni && !/^\d{8}$/.test(dni)) {
-    mensaje.textContent =
-      "El DNI debe tener exactamente 8 números.";
-
-    mensaje.classList.add("error");
+    mostrarError(mensaje, "El DNI debe tener exactamente 8 números.");
     return;
   }
 
   if (celular && !/^\d{9}$/.test(celular)) {
-    mensaje.textContent =
-      "El celular debe tener exactamente 9 números.";
-
-    mensaje.classList.add("error");
+    mostrarError(mensaje, "El celular debe tener exactamente 9 números.");
     return;
   }
 
-  const nuevoCliente = {
+  const datosCliente = {
     nombres: obtenerValor("#clienteNombres"),
-    apellidoPaterno: obtenerValor(
-      "#clienteApellidoPaterno"
-    ),
-    apellidoMaterno: valorONull(
-      "#clienteApellidoMaterno"
-    ),
+    apellidoPaterno: obtenerValor("#clienteApellidoPaterno"),
+    apellidoMaterno: valorONull("#clienteApellidoMaterno"),
     dni: dni || null,
     celular: celular || null,
-    direccion: valorONull(
-      "#clienteDireccion"
-    ),
-    distrito: valorONull(
-      "#clienteDistrito"
-    ),
+    direccion: valorONull("#clienteDireccion"),
+    distrito: valorONull("#clienteDistrito"),
     zona: valorONull("#clienteZona"),
-    referencia: valorONull(
-      "#clienteReferencia"
-    ),
-    puestoTrabajo: valorONull(
-      "#clientePuestoTrabajo"
-    )
+    referencia: valorONull("#clienteReferencia"),
+    puestoTrabajo: valorONull("#clientePuestoTrabajo"),
+    activo: clienteEditado ? clienteEditado.activo : true,
   };
 
-  const boton = document.querySelector(
-    "#btnGuardarCliente"
-  );
+  const editando = Boolean(clienteEditado);
+  const boton = document.querySelector("#btnGuardarCliente");
 
   mensaje.textContent = "";
   mensaje.classList.remove("error");
-
   boton.disabled = true;
-  boton.textContent = "Guardando...";
+  boton.textContent = editando ? "Guardando cambios..." : "Guardando...";
 
   try {
     const clienteGuardado = await apiFetch(
-      "/clientes",
+      editando ? `/clientes/${clienteEditado.idCliente}` : "/clientes",
       {
-        method: "POST",
-        body: JSON.stringify(nuevoCliente)
-      }
+        method: editando ? "PUT" : "POST",
+        body: JSON.stringify(datosCliente),
+      },
     );
 
-    localStorage.setItem(
-      "controlventas_cliente_contrato",
-      JSON.stringify(clienteGuardado)
-    );
-
-    document.querySelector(
-      ".contenido-formulario"
-    ).innerHTML = `
+    document.querySelector(".contenido-formulario").innerHTML = `
       <div class="registro-exitoso">
         <div>✓</div>
-
-        <h2>Cliente registrado</h2>
-
+        <h2>${editando ? "Cliente actualizado" : "Cliente registrado"}</h2>
         <p>
-          ${escaparTexto(
-            clienteGuardado.nombres
-          )}
-          ${escaparTexto(
-            clienteGuardado.apellidoPaterno
-          )}
-          fue guardado correctamente.
+          ${escaparTexto(clienteGuardado.nombres)}
+          ${escaparTexto(clienteGuardado.apellidoPaterno)}
+          fue ${editando ? "actualizado" : "guardado"} correctamente.
         </p>
-
-        <strong>
-          ${escaparTexto(
-            clienteGuardado.codigoCliente
-          )}
-        </strong>
-
+        <strong>${escaparTexto(clienteGuardado.codigoCliente)}</strong>
         <button
           type="button"
           id="btnVolverListaClientes"
@@ -646,45 +486,35 @@ async function guardarNuevoCliente(
 
     document
       .querySelector("#btnVolverListaClientes")
-      .addEventListener(
-        "click",
-        volverAClientes
-      );
-
+      .addEventListener("click", volverAClientes);
   } catch (error) {
-    mensaje.textContent = error.message;
-    mensaje.classList.add("error");
-
+    mostrarError(mensaje, error.message);
     boton.disabled = false;
-    boton.textContent = "Guardar cliente";
+    boton.textContent = editando ? "Guardar cambios" : "Guardar cliente";
   }
 }
 
-function obtenerIniciales(
-  nombres,
-  apellidoPaterno
-) {
-  const primera = nombres
-    ? nombres.charAt(0)
-    : "";
+function seleccionado(valorActual, valorOpcion) {
+  return valorActual === valorOpcion ? "selected" : "";
+}
 
-  const segunda = apellidoPaterno
-    ? apellidoPaterno.charAt(0)
-    : "";
+function mostrarError(elemento, texto) {
+  elemento.textContent = texto;
+  elemento.classList.add("error");
+}
 
+function obtenerIniciales(nombres, apellidoPaterno) {
+  const primera = nombres ? nombres.charAt(0) : "";
+  const segunda = apellidoPaterno ? apellidoPaterno.charAt(0) : "";
   return `${primera}${segunda}`.toUpperCase();
 }
 
 function obtenerValor(selector) {
-  return document
-    .querySelector(selector)
-    .value
-    .trim();
+  return document.querySelector(selector).value.trim();
 }
 
 function valorONull(selector) {
   const valor = obtenerValor(selector);
-
   return valor || null;
 }
 

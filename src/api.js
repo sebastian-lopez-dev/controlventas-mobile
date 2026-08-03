@@ -1,86 +1,101 @@
-const API_URL = (
-    import.meta.env.VITE_API_URL ||
-    "http://localhost:8080/api"
+export const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:8080/api"
 ).replace(/\/+$/, "");
 
 export async function apiFetch(
-    ruta,
-    opciones = {}
+  ruta,
+  opciones = {}
 ) {
-    const token = localStorage.getItem(
-        "controlventas_token"
+  const token = localStorage.getItem(
+    "controlventas_token"
+  );
+
+  const headers = new Headers(
+    opciones.headers || {}
+  );
+
+  const esFormulario =
+    opciones.body instanceof FormData;
+
+  if (
+    opciones.body &&
+    !esFormulario
+  ) {
+    headers.set(
+      "Content-Type",
+      "application/json"
+    );
+  }
+
+  if (token) {
+    headers.set(
+      "Authorization",
+      `Bearer ${token}`
+    );
+  }
+
+  const respuesta = await fetch(
+    `${API_URL}${ruta}`,
+    {
+      ...opciones,
+      headers
+    }
+  );
+
+  if (respuesta.status === 401) {
+    localStorage.removeItem(
+      "controlventas_token"
     );
 
-    const headers = new Headers(
-        opciones.headers || {}
+    localStorage.removeItem(
+      "controlventas_usuario"
     );
 
-    const esFormulario =
-        opciones.body instanceof FormData;
+    throw new Error(
+      "Tu sesión terminó. Vuelve a ingresar."
+    );
+  }
 
-    if (opciones.body && !esFormulario) {
-        headers.set(
-            "Content-Type",
-            "application/json"
-        );
-    }
+  if (respuesta.status === 204) {
+    return null;
+  }
 
-    if (token) {
-        headers.set(
-            "Authorization",
-            `Bearer ${token}`
-        );
-    }
-
-    const respuesta = await fetch(
-        `${API_URL}${ruta}`,
-        {
-            ...opciones,
-            headers
-        }
+  const tipoContenido =
+    respuesta.headers.get(
+      "content-type"
     );
 
-    if (respuesta.status === 401) {
-        localStorage.removeItem(
-            "controlventas_token"
-        );
+  let datos;
 
-        localStorage.removeItem(
-            "controlventas_usuario"
-        );
+  if (
+    tipoContenido &&
+    tipoContenido.includes(
+      "application/json"
+    )
+  ) {
+    datos = await respuesta.json();
 
-        throw new Error(
-            "Tu sesión terminó. Vuelve a ingresar."
-        );
-    }
+  } else {
+    datos = await respuesta.text();
+  }
 
-    if (respuesta.status === 204) {
-        return null;
-    }
+  if (!respuesta.ok) {
+    const mensaje =
+      datos?.mensaje ||
+      datos?.detail ||
+      datos?.message ||
+      datos?.error ||
+      (
+        typeof datos === "string" &&
+        datos.trim()
+          ? datos
+          : null
+      ) ||
+      `No se pudo completar la operación. Error ${respuesta.status}`;
 
-    const tipoContenido =
-        respuesta.headers.get("content-type");
+    throw new Error(mensaje);
+  }
 
-    let datos;
-
-    if (
-        tipoContenido &&
-        tipoContenido.includes("application/json")
-    ) {
-        datos = await respuesta.json();
-    } else {
-        datos = await respuesta.text();
-    }
-
-    if (!respuesta.ok) {
-        const mensaje =
-            datos?.detail ||
-            datos?.message ||
-            datos?.error ||
-            "No se pudo completar la operación";
-
-        throw new Error(mensaje);
-    }
-
-    return datos;
+  return datos;
 }

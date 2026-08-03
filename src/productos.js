@@ -1,9 +1,6 @@
 import { apiFetch } from "./api.js";
 
-export async function mostrarProductos(
-  usuario,
-  volverAlInicio
-) {
+export async function mostrarProductos(usuario, volverAlInicio) {
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
 
@@ -34,7 +31,10 @@ export async function mostrarProductos(
 
       <section class="contenido-productos">
 
-        <div id="resumenProductos" class="resumen-productos">
+        <div
+          id="resumenProductos"
+          class="resumen-productos"
+        >
           <article>
             <span>Productos activos</span>
             <strong>--</strong>
@@ -98,30 +98,21 @@ export async function mostrarProductos(
     .querySelector("#btnVolverProductos")
     .addEventListener("click", volverAlInicio);
 
-  document
-    .querySelector("#btnNuevoProducto")
-    .addEventListener("click", () => {
-      mostrarFormularioProducto(
-        usuario,
-        () => mostrarProductos(
-          usuario,
-          volverAlInicio
-        )
-      );
-    });
+  document.querySelector("#btnNuevoProducto").addEventListener("click", () => {
+    mostrarFormularioProducto(usuario, () =>
+      mostrarProductos(usuario, volverAlInicio),
+    );
+  });
 
   try {
-    const productos = await apiFetch("/productos");
+    const productos = await apiFetch("/productos/activos");
 
     renderizarResumenProductos(productos);
     renderizarProductos(productos);
     activarFiltrosProductos();
-    activarSeleccionProducto(productos);
-
+    activarAccionesProductos(productos, usuario, volverAlInicio);
   } catch (error) {
-    document.querySelector(
-      "#listaProductos"
-    ).innerHTML = `
+    document.querySelector("#listaProductos").innerHTML = `
       <div class="error-cobranza">
         <div>!</div>
         <h2>No se pudieron cargar los productos</h2>
@@ -132,22 +123,14 @@ export async function mostrarProductos(
 }
 
 function renderizarResumenProductos(productos) {
-  const productosActivos = productos.filter(
-    (producto) => producto.activo
+  const productosStockBajo = productos.filter(
+    (producto) => Number(producto.stockAlmacen) <= Number(producto.stockMinimo),
   );
 
-  const productosStockBajo = productosActivos.filter(
-    (producto) =>
-      Number(producto.stockAlmacen) <=
-      Number(producto.stockMinimo)
-  );
-
-  document.querySelector(
-    "#resumenProductos"
-  ).innerHTML = `
+  document.querySelector("#resumenProductos").innerHTML = `
     <article>
       <span>Productos activos</span>
-      <strong>${productosActivos.length}</strong>
+      <strong>${productos.length}</strong>
     </article>
 
     <article>
@@ -158,15 +141,13 @@ function renderizarResumenProductos(productos) {
 }
 
 function renderizarProductos(productos) {
-  const lista = document.querySelector(
-    "#listaProductos"
-  );
+  const lista = document.querySelector("#listaProductos");
 
   if (productos.length === 0) {
     lista.innerHTML = `
       <div class="productos-vacio">
         <div>📦</div>
-        <h2>No hay productos registrados</h2>
+        <h2>No hay productos activos</h2>
         <p>
           Presiona “Nuevo” para registrar
           el primer producto.
@@ -177,44 +158,31 @@ function renderizarProductos(productos) {
     return;
   }
 
-  const productosOrdenados = [...productos].sort(
-    (productoA, productoB) =>
-      productoA.nombre.localeCompare(
-        productoB.nombre
-      )
+  const productosOrdenados = [...productos].sort((productoA, productoB) =>
+    productoA.nombre.localeCompare(productoB.nombre),
   );
 
   lista.innerHTML = `
     <div class="cantidad-resultados">
       ${productos.length}
-      ${
-        productos.length === 1
-          ? "producto"
-          : "productos"
-      }
+      ${productos.length === 1 ? "producto" : "productos"}
     </div>
 
     <div class="lista-productos">
-      ${productosOrdenados
-        .map(crearTarjetaProducto)
-        .join("")}
+      ${productosOrdenados.map(crearTarjetaProducto).join("")}
     </div>
 
     <p
-      id="mensajeProductoSeleccionado"
+      id="mensajeAccionProducto"
       class="aviso-accion"
     ></p>
   `;
 }
 
 function crearTarjetaProducto(producto) {
-  const stock = Number(
-    producto.stockAlmacen || 0
-  );
+  const stock = Number(producto.stockAlmacen || 0);
 
-  const stockMinimo = Number(
-    producto.stockMinimo || 0
-  );
+  const stockMinimo = Number(producto.stockMinimo || 0);
 
   let estadoStock = "normal";
 
@@ -231,7 +199,7 @@ function crearTarjetaProducto(producto) {
     producto.marca,
     producto.modelo,
     producto.color,
-    producto.talla
+    producto.talla,
   ]
     .filter(Boolean)
     .join(" ")
@@ -239,9 +207,7 @@ function crearTarjetaProducto(producto) {
 
   return `
     <article
-      class="tarjeta-producto ${
-        producto.activo ? "" : "producto-inactivo"
-      }"
+      class="tarjeta-producto"
       data-busqueda="${escaparTexto(busqueda)}"
       data-estado-stock="${estadoStock}"
     >
@@ -261,10 +227,7 @@ function crearTarjetaProducto(producto) {
           </h2>
 
           <p>
-            ${escaparTexto(
-              producto.categoria ||
-              "Sin categoría"
-            )}
+            ${escaparTexto(producto.categoria || "Sin categoría")}
           </p>
         </div>
 
@@ -285,9 +248,7 @@ function crearTarjetaProducto(producto) {
         <div>
           <span>Precio</span>
           <strong>
-            ${formatearDinero(
-              producto.precioVenta
-            )}
+            ${formatearDinero(producto.precioVenta)}
           </strong>
         </div>
 
@@ -310,9 +271,7 @@ function crearTarjetaProducto(producto) {
             ? `
               <span>
                 Marca:
-                <b>${escaparTexto(
-                  producto.marca
-                )}</b>
+                <b>${escaparTexto(producto.marca)}</b>
               </span>
             `
             : ""
@@ -323,9 +282,7 @@ function crearTarjetaProducto(producto) {
             ? `
               <span>
                 Modelo:
-                <b>${escaparTexto(
-                  producto.modelo
-                )}</b>
+                <b>${escaparTexto(producto.modelo)}</b>
               </span>
             `
             : ""
@@ -336,9 +293,7 @@ function crearTarjetaProducto(producto) {
             ? `
               <span>
                 Color:
-                <b>${escaparTexto(
-                  producto.color
-                )}</b>
+                <b>${escaparTexto(producto.color)}</b>
               </span>
             `
             : ""
@@ -349,9 +304,7 @@ function crearTarjetaProducto(producto) {
             ? `
               <span>
                 Talla:
-                <b>${escaparTexto(
-                  producto.talla
-                )}</b>
+                <b>${escaparTexto(producto.talla)}</b>
               </span>
             `
             : ""
@@ -359,115 +312,151 @@ function crearTarjetaProducto(producto) {
 
       </div>
 
-      ${
-        producto.activo && stock > 0
-          ? `
-            <button
-              type="button"
-              class="btn-seleccionar-producto"
-              data-seleccionar-producto="${
-                producto.idProducto
-              }"
-            >
-              Seleccionar para contrato
-            </button>
-          `
-          : ""
-      }
+      <div class="acciones-producto">
+
+        <button
+          type="button"
+          class="btn-editar-producto"
+          data-editar-producto="${producto.idProducto}"
+        >
+          Editar
+        </button>
+
+        <button
+          type="button"
+          class="btn-eliminar-producto"
+          data-eliminar-producto="${producto.idProducto}"
+        >
+          Eliminar
+        </button>
+
+      </div>
+
     </article>
   `;
 }
 
 function activarFiltrosProductos() {
-  const buscador = document.querySelector(
-    "#buscarProducto"
-  );
+  const buscador = document.querySelector("#buscarProducto");
 
   let filtroActual = "todos";
 
   function aplicarFiltros() {
-    const texto = buscador.value
-      .trim()
-      .toLowerCase();
+    const texto = buscador.value.trim().toLowerCase();
 
-    document
-      .querySelectorAll(".tarjeta-producto")
-      .forEach((tarjeta) => {
-        const coincideTexto =
-          tarjeta.dataset.busqueda.includes(texto);
+    document.querySelectorAll(".tarjeta-producto").forEach((tarjeta) => {
+      const coincideTexto = tarjeta.dataset.busqueda.includes(texto);
 
-        const estado =
-          tarjeta.dataset.estadoStock;
+      const estado = tarjeta.dataset.estadoStock;
 
-        const coincideFiltro =
-          filtroActual === "todos" ||
-          estado === filtroActual;
+      const coincideFiltro =
+        filtroActual === "todos" || estado === filtroActual;
 
-        tarjeta.hidden = !(
-          coincideTexto && coincideFiltro
-        );
-      });
+      tarjeta.hidden = !(coincideTexto && coincideFiltro);
+    });
   }
 
-  buscador.addEventListener(
-    "input",
-    aplicarFiltros
-  );
+  buscador.addEventListener("input", aplicarFiltros);
 
-  document
-    .querySelectorAll(".filtro-producto")
-    .forEach((boton) => {
-      boton.addEventListener("click", () => {
-        document
-          .querySelectorAll(".filtro-producto")
-          .forEach((item) =>
-            item.classList.remove("activo")
-          );
+  document.querySelectorAll(".filtro-producto").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      document
+        .querySelectorAll(".filtro-producto")
+        .forEach((item) => item.classList.remove("activo"));
 
-        boton.classList.add("activo");
-        filtroActual = boton.dataset.filtro;
+      boton.classList.add("activo");
+      filtroActual = boton.dataset.filtro;
 
-        aplicarFiltros();
-      });
+      aplicarFiltros();
     });
+  });
 }
 
-function activarSeleccionProducto(productos) {
-  document
-    .querySelectorAll(
-      "[data-seleccionar-producto]"
-    )
-    .forEach((boton) => {
-      boton.addEventListener("click", () => {
-        const idProducto = Number(
-          boton.dataset.seleccionarProducto
-        );
+function activarAccionesProductos(productos, usuario, volverAlInicio) {
+  const volverAProductos = () => mostrarProductos(usuario, volverAlInicio);
 
-        const producto = productos.find(
-          (item) =>
-            item.idProducto === idProducto
-        );
+  document.querySelectorAll("[data-editar-producto]").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      const idProducto = Number(boton.dataset.editarProducto);
 
-        localStorage.setItem(
-          "controlventas_producto_contrato",
-          JSON.stringify(producto)
-        );
+      const producto = productos.find(
+        (item) => Number(item.idProducto) === idProducto,
+      );
 
-        const mensaje = document.querySelector(
-          "#mensajeProductoSeleccionado"
-        );
+      if (!producto) {
+        return;
+      }
 
-        mensaje.textContent =
-          `${producto.nombre} fue seleccionado ` +
-          `para el contrato.`;
-      });
+      mostrarFormularioProducto(usuario, volverAProductos, producto);
     });
+  });
+
+  document.querySelectorAll("[data-eliminar-producto]").forEach((boton) => {
+    boton.addEventListener("click", async () => {
+      const idProducto = Number(boton.dataset.eliminarProducto);
+
+      const producto = productos.find(
+        (item) => Number(item.idProducto) === idProducto,
+      );
+
+      if (!producto) {
+        return;
+      }
+
+      await eliminarProductoDefinitivamente(
+        producto,
+        boton,
+        usuario,
+        volverAlInicio,
+      );
+    });
+  });
+}
+
+async function eliminarProductoDefinitivamente(
+  producto,
+  boton,
+  usuario,
+  volverAlInicio,
+) {
+  const confirmado = window.confirm(
+    `¿Eliminar definitivamente ${producto.nombre}? ` +
+      "Esta acción no se puede deshacer.",
+  );
+
+  if (!confirmado) {
+    return;
+  }
+
+  const mensaje = document.querySelector("#mensajeAccionProducto");
+
+  boton.disabled = true;
+  boton.textContent = "Eliminando...";
+
+  try {
+    await apiFetch(`/productos/${producto.idProducto}/definitivo`, {
+      method: "DELETE",
+    });
+
+    await mostrarProductos(usuario, volverAlInicio);
+  } catch (error) {
+    if (mensaje) {
+      mensaje.textContent = error.message;
+      mensaje.classList.add("error");
+    }
+
+    boton.disabled = false;
+    boton.textContent = "Eliminar";
+  }
 }
 
 function mostrarFormularioProducto(
   usuario,
-  volverAProductos
+  volverAProductos,
+  productoEditar = null,
 ) {
+  const editando = Boolean(productoEditar?.idProducto);
+
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
 
@@ -481,8 +470,13 @@ function mostrarFormularioProducto(
         </button>
 
         <div>
-          <h1>Nuevo producto</h1>
-          <p>Registrar mercadería</p>
+          <h1>
+            ${editando ? "Editar producto" : "Nuevo producto"}
+          </h1>
+
+          <p>
+            ${editando ? "Actualizar información" : "Registrar mercadería"}
+          </p>
         </div>
       </header>
 
@@ -498,7 +492,7 @@ function mostrarFormularioProducto(
 
             <div class="fila-formulario">
               <label>
-                Código <b>*</b>
+                Código
 
                 <input
                   type="text"
@@ -535,7 +529,7 @@ function mostrarFormularioProducto(
             </div>
 
             <label>
-              Nombre del producto <b>*</b>
+              Nombre del producto
 
               <input
                 type="text"
@@ -594,7 +588,7 @@ function mostrarFormularioProducto(
             <h2>Precio y stock</h2>
 
             <label>
-              Precio de venta <b>*</b>
+              Precio de venta
 
               <input
                 type="number"
@@ -608,7 +602,7 @@ function mostrarFormularioProducto(
 
             <div class="fila-formulario">
               <label>
-                Stock del almacén <b>*</b>
+                Stock del almacén
 
                 <input
                   type="number"
@@ -642,7 +636,7 @@ function mostrarFormularioProducto(
             id="btnGuardarProducto"
             class="btn-guardar-formulario"
           >
-            Guardar producto
+            ${editando ? "Guardar cambios" : "Guardar producto"}
           </button>
 
         </form>
@@ -652,69 +646,72 @@ function mostrarFormularioProducto(
     </main>
   `;
 
+  if (editando) {
+    document.querySelector("#productoCodigo").value =
+      productoEditar.codigo || "";
+
+    document.querySelector("#productoCategoria").value =
+      productoEditar.categoria || "";
+
+    document.querySelector("#productoNombre").value =
+      productoEditar.nombre || "";
+
+    document.querySelector("#productoMarca").value = productoEditar.marca || "";
+
+    document.querySelector("#productoModelo").value =
+      productoEditar.modelo || "";
+
+    document.querySelector("#productoColor").value = productoEditar.color || "";
+
+    document.querySelector("#productoTalla").value = productoEditar.talla || "";
+
+    document.querySelector("#productoPrecio").value =
+      productoEditar.precioVenta ?? 0;
+
+    document.querySelector("#productoStock").value =
+      productoEditar.stockAlmacen ?? 0;
+
+    document.querySelector("#productoStockMinimo").value =
+      productoEditar.stockMinimo ?? 0;
+  }
+
   document
-    .querySelector(
-      "#btnVolverFormularioProducto"
-    )
-    .addEventListener(
-      "click",
-      volverAProductos
-    );
+    .querySelector("#btnVolverFormularioProducto")
+    .addEventListener("click", volverAProductos);
 
   document
     .querySelector("#formNuevoProducto")
     .addEventListener("submit", async (evento) => {
       evento.preventDefault();
 
-      await guardarNuevoProducto(
-        volverAProductos
-      );
+      await guardarProducto(productoEditar, volverAProductos);
     });
 }
 
-async function guardarNuevoProducto(
-  volverAProductos
-) {
-  const mensaje = document.querySelector(
-    "#mensajeFormularioProducto"
-  );
+async function guardarProducto(productoEditar, volverAProductos) {
+  const editando = Boolean(productoEditar?.idProducto);
 
-  const precio = Number(
-    obtenerValor("#productoPrecio")
-  );
+  const mensaje = document.querySelector("#mensajeFormularioProducto");
 
-  const stock = Number(
-    obtenerValor("#productoStock")
-  );
+  const precio = Number(obtenerValor("#productoPrecio"));
 
-  const stockMinimo = Number(
-    obtenerValor("#productoStockMinimo") || 0
-  );
+  const stock = Number(obtenerValor("#productoStock"));
 
-  if (
-    precio < 0 ||
-    stock < 0 ||
-    stockMinimo < 0
-  ) {
-    mensaje.textContent =
-      "El precio y el stock no pueden ser negativos.";
+  const stockMinimo = Number(obtenerValor("#productoStockMinimo") || 0);
+
+  if (precio < 0 || stock < 0 || stockMinimo < 0) {
+    mensaje.textContent = "El precio y el stock no pueden ser negativos.";
 
     mensaje.classList.add("error");
     return;
   }
 
-  const nuevoProducto = {
-    codigo: obtenerValor(
-      "#productoCodigo"
-    ).toUpperCase(),
+  const datosProducto = {
+    codigo: obtenerValor("#productoCodigo").toUpperCase(),
 
-    nombre: obtenerValor(
-      "#productoNombre"
-    ),
+    nombre: obtenerValor("#productoNombre"),
 
-    categoria: valorONull(
-      "#productoCategoria"
-    ),
+    categoria: valorONull("#productoCategoria"),
 
     marca: valorONull("#productoMarca"),
     modelo: valorONull("#productoModelo"),
@@ -723,47 +720,48 @@ async function guardarNuevoProducto(
     precioVenta: precio,
     stockAlmacen: stock,
     stockMinimo: stockMinimo,
-    activo: true
+    activo: productoEditar?.activo ?? true,
   };
 
-  const boton = document.querySelector(
-    "#btnGuardarProducto"
-  );
+  const boton = document.querySelector("#btnGuardarProducto");
 
   mensaje.textContent = "";
   mensaje.classList.remove("error");
 
   boton.disabled = true;
-  boton.textContent = "Guardando...";
+  boton.textContent = editando ? "Actualizando..." : "Guardando...";
+
+  const direccion = editando
+    ? `/productos/${productoEditar.idProducto}`
+    : "/productos";
+
+  const metodo = editando ? "PUT" : "POST";
 
   try {
-    const productoGuardado = await apiFetch(
-      "/productos",
-      {
-        method: "POST",
-        body: JSON.stringify(nuevoProducto)
-      }
-    );
+    const productoGuardado = await apiFetch(direccion, {
+      method: metodo,
+      body: JSON.stringify(datosProducto),
+    });
 
-    document.querySelector(
-      ".contenido-formulario"
-    ).innerHTML = `
+    document.querySelector(".contenido-formulario").innerHTML = `
       <div class="registro-exitoso">
         <div>✓</div>
 
-        <h2>Producto registrado</h2>
+        <h2>
+          ${editando ? "Producto actualizado" : "Producto registrado"}
+        </h2>
 
         <p>
-          ${escaparTexto(
-            productoGuardado.nombre
-          )}
-          fue guardado correctamente.
+          ${escaparTexto(productoGuardado.nombre)}
+          ${
+            editando
+              ? "fue actualizado correctamente."
+              : "fue registrado correctamente."
+          }
         </p>
 
         <strong>
-          ${escaparTexto(
-            productoGuardado.codigo
-          )}
+          ${escaparTexto(productoGuardado.codigo)}
         </strong>
 
         <button
@@ -777,38 +775,26 @@ async function guardarNuevoProducto(
     `;
 
     document
-      .querySelector(
-        "#btnVolverListaProductos"
-      )
-      .addEventListener(
-        "click",
-        volverAProductos
-      );
-
+      .querySelector("#btnVolverListaProductos")
+      .addEventListener("click", volverAProductos);
   } catch (error) {
     mensaje.textContent = error.message;
     mensaje.classList.add("error");
 
     boton.disabled = false;
-    boton.textContent = "Guardar producto";
+    boton.textContent = editando ? "Guardar cambios" : "Guardar producto";
   }
 }
 
 function formatearDinero(valor) {
-  return Number(valor || 0).toLocaleString(
-    "es-PE",
-    {
-      style: "currency",
-      currency: "PEN"
-    }
-  );
+  return Number(valor || 0).toLocaleString("es-PE", {
+    style: "currency",
+    currency: "PEN",
+  });
 }
 
 function obtenerValor(selector) {
-  return document
-    .querySelector(selector)
-    .value
-    .trim();
+  return document.querySelector(selector).value.trim();
 }
 
 function valorONull(selector) {
