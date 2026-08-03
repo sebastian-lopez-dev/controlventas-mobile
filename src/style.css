@@ -4771,3 +4771,81 @@ button {
     box-sizing: border-box;
   }
 }
+
+/* ========================================
+   FORMULARIO DE NUEVO PRÉSTAMO
+======================================== */
+
+#formNuevoPrestamo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+#formNuevoPrestamo .campo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+}
+
+#formNuevoPrestamo .campo label {
+  color: #4d5b71;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+#formNuevoPrestamo .campo input,
+#formNuevoPrestamo .campo select,
+#formNuevoPrestamo .campo textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 13px;
+  color: #24324a;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #dce4ef;
+  border-radius: 12px;
+  outline: none;
+}
+
+#formNuevoPrestamo .campo textarea {
+  min-height: 100px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+#formNuevoPrestamo .campo input::placeholder,
+#formNuevoPrestamo .campo textarea::placeholder {
+  color: #a2acba;
+}
+
+#formNuevoPrestamo .campo input:focus,
+#formNuevoPrestamo .campo select:focus,
+#formNuevoPrestamo .campo textarea:focus {
+  border-color: #18a979;
+  box-shadow: 0 0 0 4px rgba(24, 169, 121, 0.1);
+}
+
+#formNuevoPrestamo .datos-cobranza {
+  margin-top: 0;
+}
+
+#formNuevoPrestamo .btn-ver-cobros {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 4px;
+  padding: 12px 18px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #20b783, #0f916b);
+  border: 0;
+  border-radius: 13px;
+  box-shadow: 0 9px 20px rgba(16, 149, 109, 0.22);
+}
+
+#formNuevoPrestamo .aviso-accion {
+  margin-top: 0;
+}

@@ -2,10 +2,21 @@ import { apiFetch } from "./api.js";
 import { mostrarCobrosDeHoy } from "./cobranza.js";
 import { mostrarClientes } from "./clientes.js";
 import { mostrarProductos } from "./productos.js";
-import { mostrarSalidas } from "./salidas.js";
+import {
+  mostrarSalidas,
+  mostrarFormularioSalida
+} from "./salidas.js";
 import { mostrarContrato } from "./contratos.js";
 import { mostrarHistorial } from "./historial.js";
 import { mostrarCobranzaAdministrador } from "./cobranza-admin.js";
+import { mostrarPrestamos } from "./prestamos.js";
+import { mostrarPagosPrestamos } from "./pagos-prestamos.js";
+import { mostrarHistorialPagosPrestamos } from "./historial-pagos-prestamos.js";
+import { mostrarClientesPrestamos } from "./clientes-prestamos.js";
+import { mostrarReportesPrestamos } from "./reportes-prestamos.js";
+import { mostrarNuevoPrestamo } from "./nuevo-prestamo.js";
+import { mostrarReportes } from "./reportes.js";
+
 
 export function mostrarInicio(usuario) {
   if (usuario.rol === "COBRADOR") {
@@ -13,7 +24,552 @@ export function mostrarInicio(usuario) {
     return;
   }
 
-  mostrarInicioAdministrador(usuario);
+  mostrarSeleccionNegocio(usuario);
+}
+
+function mostrarSeleccionNegocio(usuario) {
+  const nombre = obtenerPrimerNombre(
+    usuario.nombreCompleto || "Christian"
+  );
+
+  document.querySelector("#app").innerHTML = `
+    <main
+      class="aplicacion-movil"
+      style="
+        min-height: 100dvh;
+        background: #eef2f7;
+      "
+    >
+      <section
+        style="
+          min-height: 100dvh;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <header
+          style="
+            position: relative;
+            overflow: hidden;
+            padding: 42px 27px 65px;
+            color: #ffffff;
+            background:
+              linear-gradient(
+                145deg,
+                #101c31 0%,
+                #172d50 55%,
+                #1d3d6d 100%
+              );
+          "
+        >
+          <div
+            style="
+              position: absolute;
+              top: -65px;
+              right: -70px;
+              width: 190px;
+              height: 190px;
+              border: 35px solid rgba(255,255,255,0.04);
+              border-radius: 50%;
+            "
+          ></div>
+
+          <div
+            style="
+              position: relative;
+              z-index: 1;
+              display: flex;
+              align-items: center;
+              gap: 14px;
+              margin-bottom: 35px;
+            "
+          >
+            <div
+              style="
+                width: 50px;
+                height: 50px;
+                display: grid;
+                place-items: center;
+                border: 1px solid rgba(255,255,255,0.20);
+                border-radius: 14px;
+                background: rgba(255,255,255,0.10);
+                font-size: 25px;
+              "
+            >
+              ◆
+            </div>
+
+            <div>
+              <strong
+                style="
+                  display: block;
+                  font-size: 17px;
+                  letter-spacing: 0.3px;
+                "
+              >
+                Corazón de Jesús
+              </strong>
+
+              <small
+                style="
+                  color: #b9c8df;
+                  font-size: 12px;
+                "
+              >
+                Sistema de gestión
+              </small>
+            </div>
+          </div>
+
+          <div style="position: relative; z-index: 1;">
+            <p
+              style="
+                margin: 0 0 7px;
+                color: #b9c8df;
+                font-size: 14px;
+                font-weight: 500;
+              "
+            >
+              Bienvenido nuevamente
+            </p>
+
+            <h1
+              style="
+                margin: 0;
+                font-size: 31px;
+                line-height: 1.1;
+                font-weight: 800;
+              "
+            >
+              ${escaparTexto(nombre)}
+            </h1>
+
+            <p
+              style="
+                margin: 15px 0 0;
+                max-width: 310px;
+                color: #d0daea;
+                font-size: 14px;
+                line-height: 1.55;
+              "
+            >
+              Selecciona el área del negocio que deseas administrar.
+            </p>
+          </div>
+        </header>
+
+        <section
+          style="
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            margin-top: -34px;
+            padding: 0 24px 32px;
+          "
+        >
+          <div
+            style="
+              padding: 25px 20px;
+              background: #ffffff;
+              border: 1px solid #dce3ed;
+              border-radius: 22px;
+              box-shadow: 0 18px 45px rgba(18, 36, 65, 0.13);
+            "
+          >
+            <div style="margin-bottom: 21px;">
+              <h2
+                style="
+                  margin: 0 0 6px;
+                  color: #15243d;
+                  font-size: 20px;
+                "
+              >
+                Paneles disponibles
+              </h2>
+
+              <p
+                style="
+                  margin: 0;
+                  color: #7e8ca3;
+                  font-size: 13px;
+                  line-height: 1.45;
+                "
+              >
+                Ingresa al sistema que vas a utilizar.
+              </p>
+            </div>
+
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+              "
+            >
+              <button
+                type="button"
+                id="btnVentasCredito"
+                style="
+                  width: 100%;
+                  min-height: 112px;
+                  padding: 19px;
+                  display: flex;
+                  align-items: center;
+                  gap: 16px;
+                  color: #ffffff;
+                  text-align: left;
+                  background:
+                    linear-gradient(
+                      135deg,
+                      #285fc7,
+                      #153f91
+                    );
+                  border: 0;
+                  border-radius: 17px;
+                  box-shadow: 0 10px 22px rgba(31, 81, 177, 0.24);
+                  cursor: pointer;
+                "
+              >
+                <span
+                  style="
+                    width: 58px;
+                    height: 58px;
+                    flex-shrink: 0;
+                    display: grid;
+                    place-items: center;
+                    border: 1px solid rgba(255,255,255,0.18);
+                    border-radius: 15px;
+                    background: rgba(255,255,255,0.13);
+                    font-size: 27px;
+                  "
+                >
+                  ▣
+                </span>
+
+                <span style="flex: 1;">
+                  <strong
+                    style="
+                      display: block;
+                      margin-bottom: 7px;
+                      font-size: 18px;
+                    "
+                  >
+                    Ventas a crédito
+                  </strong>
+
+                  <small
+                    style="
+                      display: block;
+                      color: #d4e0f5;
+                      font-size: 12px;
+                      line-height: 1.45;
+                    "
+                  >
+                    Productos, contratos, salidas y cobranza.
+                  </small>
+                </span>
+
+                <span
+                  style="
+                    font-size: 28px;
+                    font-weight: 300;
+                  "
+                >
+                  ›
+                </span>
+              </button>
+
+              <button
+                type="button"
+                id="btnPrestamosEfectivo"
+                style="
+                  width: 100%;
+                  min-height: 112px;
+                  padding: 19px;
+                  display: flex;
+                  align-items: center;
+                  gap: 16px;
+                  color: #ffffff;
+                  text-align: left;
+                  background:
+                    linear-gradient(
+                      135deg,
+                      #168867,
+                      #075b47
+                    );
+                  border: 0;
+                  border-radius: 17px;
+                  box-shadow: 0 10px 22px rgba(10, 105, 79, 0.22);
+                  cursor: pointer;
+                "
+              >
+                <span
+                  style="
+                    width: 58px;
+                    height: 58px;
+                    flex-shrink: 0;
+                    display: grid;
+                    place-items: center;
+                    border: 1px solid rgba(255,255,255,0.18);
+                    border-radius: 15px;
+                    background: rgba(255,255,255,0.13);
+                    font-size: 27px;
+                  "
+                >
+                  S/
+                </span>
+
+                <span style="flex: 1;">
+                  <strong
+                    style="
+                      display: block;
+                      margin-bottom: 7px;
+                      font-size: 18px;
+                    "
+                  >
+                    Préstamos en efectivo
+                  </strong>
+
+                  <small
+                    style="
+                      display: block;
+                      color: #d3eee7;
+                      font-size: 12px;
+                      line-height: 1.45;
+                    "
+                  >
+                    Préstamos, pagos, clientes y reportes.
+                  </small>
+                </span>
+
+                <span
+                  style="
+                    font-size: 28px;
+                    font-weight: 300;
+                  "
+                >
+                  ›
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            style="
+              margin-top: 22px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              color: #8692a6;
+              font-size: 12px;
+            "
+          >
+            <span>●</span>
+            <span>Acceso exclusivo del administrador</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  `;
+
+  document
+    .querySelector("#btnVentasCredito")
+    .addEventListener("click", () => {
+      mostrarInicioAdministrador(usuario);
+    });
+
+  document
+    .querySelector("#btnPrestamosEfectivo")
+    .addEventListener("click", () => {
+      mostrarInicioPrestamos(usuario);
+    });
+}
+
+function mostrarInicioPrestamos(usuario) {
+  document.querySelector("#app").innerHTML = `
+    <main class="aplicacion-movil">
+      <section class="contenido-inicio">
+        <div class="saludo-con-salida">
+          <div class="saludo-usuario">
+            <p>${obtenerSaludo()}</p>
+            <h1>Christian</h1>
+          </div>
+
+          <button
+            type="button"
+            id="btnVolverNegocios"
+            class="btn-cerrar-sesion"
+          >
+            Volver
+          </button>
+        </div>
+
+        <article class="tarjeta-cobranza-hoy">
+          <span>RESUMEN DE PRÉSTAMOS</span>
+          <h2>S/ 0.00 pendiente</h2>
+          <p>Todavía no hay préstamos registrados</p>
+
+          <button
+            type="button"
+            class="btn-ver-cobros"
+            data-prestamo-accion="Nuevo préstamo"
+          >
+            + Nuevo préstamo
+          </button>
+        </article>
+
+        <div class="titulo-seccion">
+          <h2>¿Qué deseas hacer?</h2>
+          <p>Administra el dinero prestado y los pagos</p>
+        </div>
+
+        <div class="menu-cobrador">
+          <button
+            type="button"
+            class="opcion-cobrador"
+            data-prestamo-accion="Préstamos"
+          >
+            <span class="opcion-icono azul">💰</span>
+
+            <div>
+              <strong>Préstamos</strong>
+              <small>Ver préstamos activos y finalizados</small>
+            </div>
+
+            <b>›</b>
+          </button>
+
+          <button
+            type="button"
+            class="opcion-cobrador"
+            data-prestamo-accion="Registrar pago"
+          >
+            <span class="opcion-icono verde">💵</span>
+
+            <div>
+              <strong>Registrar pago</strong>
+              <small>Anotar el dinero recibido</small>
+            </div>
+
+            <b>›</b>
+          </button>
+
+          <button
+            type="button"
+            class="opcion-cobrador"
+            data-prestamo-accion="Clientes"
+          >
+            <span class="opcion-icono celeste">👥</span>
+
+            <div>
+              <strong>Clientes</strong>
+              <small>Personas que recibieron préstamos</small>
+            </div>
+
+            <b>›</b>
+          </button>
+
+          <button
+            type="button"
+            class="opcion-cobrador"
+            data-prestamo-accion="Historial"
+          >
+            <span class="opcion-icono morado">🕘</span>
+
+            <div>
+              <strong>Historial de pagos</strong>
+              <small>Pagos registrados anteriormente</small>
+            </div>
+
+            <b>›</b>
+          </button>
+
+          <button
+            type="button"
+            class="opcion-cobrador"
+            data-prestamo-accion="Reportes"
+          >
+            <span class="opcion-icono naranja">📊</span>
+
+            <div>
+              <strong>Reportes</strong>
+              <small>Prestado, cobrado y pendiente</small>
+            </div>
+
+            <b>›</b>
+          </button>
+        </div>
+
+        <p id="avisoPrestamos" class="aviso-accion"></p>
+      </section>
+    </main>
+  `;
+
+  document
+    .querySelector("#btnVolverNegocios")
+    .addEventListener("click", () => {
+      mostrarSeleccionNegocio(usuario);
+    });
+
+  document
+    .querySelectorAll("[data-prestamo-accion]")
+    .forEach((boton) => {
+      boton.addEventListener("click", () => {
+        const accion = boton.dataset.prestamoAccion;
+
+        if (accion === "Préstamos") {
+          mostrarPrestamos(
+            usuario,
+            () => mostrarInicioPrestamos(usuario),
+          );
+          return;
+        }
+
+        if (accion === "Registrar pago") {
+          mostrarPagosPrestamos(
+            usuario,
+            () => mostrarInicioPrestamos(usuario),
+          );
+          return;
+        }
+
+        if (accion === "Historial") {
+          mostrarHistorialPagosPrestamos(
+            usuario,
+            () => mostrarInicioPrestamos(usuario),
+          );
+          return;
+        }
+
+        if (accion === "Clientes") {
+          mostrarClientesPrestamos(
+            usuario,
+            () => mostrarInicioPrestamos(usuario),
+          );
+          return;
+        }
+
+        if (accion === "Reportes") {
+          mostrarReportesPrestamos(
+            usuario,
+            () => mostrarInicioPrestamos(usuario),
+          );
+          return;
+        }
+
+        if (accion === "Nuevo préstamo") {
+          mostrarNuevoPrestamo(
+            usuario,
+            () => mostrarInicioPrestamos(usuario)
+          );
+          return;
+        }
+
+        document.querySelector("#avisoPrestamos").textContent =
+          `Seleccionaste: ${accion}.`;
+      });
+    });
 }
 
 function mostrarInicioAdministrador(usuario) {
@@ -31,7 +587,7 @@ function mostrarInicioAdministrador(usuario) {
             id="btnCerrarSesion"
             class="btn-cerrar-sesion"
           >
-            Salir
+            Volver
           </button>
         </div>
 
@@ -232,13 +788,11 @@ async function cargarResumenCobrador(usuario) {
       ventas.map((venta) => venta.cliente?.idCliente).filter(Boolean),
     ).size;
 
-    cantidadCobros.textContent = `${clientesDeHoy} ${
-      clientesDeHoy === 1 ? "cliente pendiente" : "clientes pendientes"
-    }`;
+    cantidadCobros.textContent = `${clientesDeHoy} ${clientesDeHoy === 1 ? "cliente pendiente" : "clientes pendientes"
+      }`;
 
-    cantidadClientes.textContent = `${clientesAsignados} ${
-      clientesAsignados === 1 ? "cliente asignado" : "clientes asignados"
-    }`;
+    cantidadClientes.textContent = `${clientesAsignados} ${clientesAsignados === 1 ? "cliente asignado" : "clientes asignados"
+      }`;
   } catch (error) {
     cantidadCobros.textContent = "No se pudo cargar";
     cantidadClientes.textContent = "No se pudo cargar";
@@ -260,8 +814,8 @@ async function mostrarClientesAsignadosCobrador(usuario, volverAlInicio) {
         <div>
           <h1>Mis clientes</h1>
           <p>Clientes asignados a ${escaparTexto(
-            obtenerPrimerNombre(usuario.nombreCompleto),
-          )}</p>
+    obtenerPrimerNombre(usuario.nombreCompleto),
+  )}</p>
         </div>
       </header>
 
@@ -361,20 +915,20 @@ function renderizarClientesAsignados(clientes) {
 
     <div class="lista-cobranzas">
       ${clientes
-        .map((cliente) => {
-          const nombre = obtenerNombreCliente(cliente);
-          const busqueda = [
-            nombre,
-            cliente.codigoCliente,
-            cliente.dni,
-            cliente.zona,
-            ...cliente.contratos,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
+      .map((cliente) => {
+        const nombre = obtenerNombreCliente(cliente);
+        const busqueda = [
+          nombre,
+          cliente.codigoCliente,
+          cliente.dni,
+          cliente.zona,
+          ...cliente.contratos,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
 
-          return `
+        return `
             <article
               class="tarjeta-cobranza tarjeta-cliente-asignado"
               data-busqueda-cliente="${escaparTexto(busqueda)}"
@@ -418,8 +972,8 @@ function renderizarClientesAsignados(clientes) {
               </div>
             </article>
           `;
-        })
-        .join("")}
+      })
+      .join("")}
     </div>
   `;
 }
@@ -440,6 +994,11 @@ function activarBuscadorClientesAsignados() {
 
 function activarEventosInicio(usuarioActual) {
   document.querySelector("#btnCerrarSesion").addEventListener("click", () => {
+    if (usuarioActual.rol === "ADMINISTRADOR") {
+      mostrarSeleccionNegocio(usuarioActual);
+      return;
+    }
+
     localStorage.removeItem("controlventas_token");
     localStorage.removeItem("controlventas_usuario");
     window.location.reload();
@@ -471,7 +1030,15 @@ function activarEventosInicio(usuarioActual) {
         return;
       }
 
-      if (accion === "Salidas" || accion === "Nueva salida") {
+      if (accion === "Nueva salida") {
+        mostrarFormularioSalida(
+          usuarioGuardado,
+          () => mostrarSalidas(usuarioGuardado, volver)
+        );
+        return;
+      }
+
+      if (accion === "Salidas") {
         mostrarSalidas(usuarioGuardado, volver);
         return;
       }
@@ -488,6 +1055,17 @@ function activarEventosInicio(usuarioActual) {
 
       if (accion === "Cobranza" && usuarioGuardado.rol === "ADMINISTRADOR") {
         mostrarCobranzaAdministrador(usuarioGuardado, volver);
+        return;
+      }
+
+      if (
+        accion === "Reportes" &&
+        usuarioGuardado.rol === "ADMINISTRADOR"
+      ) {
+        mostrarReportes(
+          usuarioGuardado,
+          volver
+        );
         return;
       }
 

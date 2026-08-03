@@ -1233,7 +1233,7 @@ async function guardarMercaderiaEnSalida(salida, productos, volverASalidas) {
   }
 }
 
-async function mostrarFormularioSalida(usuario, volverASalidas) {
+export async function mostrarFormularioSalida(usuario, volverASalidas) {
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
 
