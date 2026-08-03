@@ -22,7 +22,7 @@ function mostrarInicioAdministrador(usuario) {
       <section class="contenido-inicio">
         <div class="saludo-con-salida">
           <div class="saludo-usuario">
-            <p>Buenos días</p>
+            <p>${obtenerSaludo()}</p>
             <h1>${escaparTexto(usuario.nombreCompleto)}</h1>
           </div>
 
@@ -118,7 +118,7 @@ async function mostrarInicioCobrador(usuario) {
       <section class="contenido-inicio">
         <div class="saludo-con-salida">
           <div class="saludo-usuario">
-            <p>Buenos días</p>
+            <p>${obtenerSaludo()}</p>
             <h1>${escaparTexto(nombreCobrador)}</h1>
           </div>
 
@@ -552,4 +552,24 @@ function escaparTexto(texto) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function obtenerSaludo() {
+  const horaActual = new Date().getHours();
+
+  if (
+    horaActual >= 5 &&
+    horaActual < 12
+  ) {
+    return "Buenos días";
+  }
+
+  if (
+    horaActual >= 12 &&
+    horaActual < 19
+  ) {
+    return "Buenas tardes";
+  }
+
+  return "Buenas noches";
 }
