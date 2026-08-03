@@ -1,11 +1,10 @@
 const NOMBRE_CACHE =
-    "controlventas-cache-v1";
+    "corazondejesus-cache-v2";
 
 const ARCHIVOS_INICIALES = [
     "/",
     "/index.html",
     "/manifest.webmanifest",
-    "/controlventas-icon.svg",
     "/icon-180.png",
     "/icon-192.png",
     "/icon-512.png",
