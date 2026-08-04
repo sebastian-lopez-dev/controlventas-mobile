@@ -119,6 +119,25 @@ function mostrarSeleccionNegocio(usuario) {
                 Sistema de gestión
               </small>
             </div>
+
+            <button
+              type="button"
+              id="btnCerrarSesionSeleccion"
+              aria-label="Cerrar sesión y volver al login"
+              style="
+                margin-left: auto;
+                padding: 9px 14px;
+                color: #ffffff;
+                font-size: 12px;
+                font-weight: 700;
+                background: rgba(255,255,255,0.10);
+                border: 1px solid rgba(255,255,255,0.22);
+                border-radius: 10px;
+                cursor: pointer;
+              "
+            >
+              Salir
+            </button>
           </div>
 
           <div style="position: relative; z-index: 1;">
@@ -383,6 +402,14 @@ function mostrarSeleccionNegocio(usuario) {
     .querySelector("#btnPrestamosEfectivo")
     .addEventListener("click", () => {
       mostrarInicioPrestamos(usuario);
+    });
+
+  document
+    .querySelector("#btnCerrarSesionSeleccion")
+    .addEventListener("click", () => {
+      localStorage.removeItem("controlventas_token");
+      localStorage.removeItem("controlventas_usuario");
+      window.location.reload();
     });
 }
 
