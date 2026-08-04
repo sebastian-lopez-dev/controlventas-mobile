@@ -386,7 +386,18 @@ function mostrarSeleccionNegocio(usuario) {
     });
 }
 
-function mostrarInicioPrestamos(usuario) {
+async function mostrarInicioPrestamos(usuario) {
+  const prestamos = await apiFetch("/prestamos");
+
+  const totalPendientePrestamos = prestamos.reduce(
+    (total, prestamo) =>
+      total + Number(prestamo.saldoPendiente || 0),
+    0
+  );
+
+  const prestamosActivos = prestamos.filter(
+    (prestamo) => Number(prestamo.saldoPendiente || 0) > 0
+  ).length;
   document.querySelector("#app").innerHTML = `
     <main class="aplicacion-movil">
       <section class="contenido-inicio">
@@ -407,8 +418,22 @@ function mostrarInicioPrestamos(usuario) {
 
         <article class="tarjeta-cobranza-hoy">
           <span>RESUMEN DE PRÉSTAMOS</span>
-          <h2>S/ 0.00 pendiente</h2>
-          <p>Todavía no hay préstamos registrados</p>
+       <h2>
+  ${totalPendientePrestamos.toLocaleString("es-PE", {
+    style: "currency",
+    currency: "PEN"
+  })} pendiente
+</h2>
+
+<p>
+  ${prestamos.length === 0
+      ? "Todavía no hay préstamos registrados"
+      : `${prestamosActivos} ${prestamosActivos === 1
+        ? "préstamo activo"
+        : "préstamos activos"
+      }`
+    }
+</p>
 
           <button
             type="button"
