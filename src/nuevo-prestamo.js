@@ -25,7 +25,24 @@ export async function mostrarNuevoPrestamo(
         <form id="formNuevoPrestamo" class="formulario-login">
 
           <div class="campo">
-            <label for="prestamoCliente">Cliente</label>
+            <label for="buscarClientePrestamo">Cliente</label>
+
+            <div class="buscador-contrato">
+              <span aria-hidden="true">⌕</span>
+
+              <input
+                type="search"
+                id="buscarClientePrestamo"
+                placeholder="Buscar por nombre, apellido, DNI o código"
+                autocomplete="off"
+              >
+            </div>
+
+            <p
+              id="resultadoBusquedaPrestamo"
+              class="resultado-buscador-contrato"
+              aria-live="polite"
+            ></p>
 
             <select id="prestamoCliente" required>
               <option value="">Cargando clientes...</option>
@@ -171,6 +188,12 @@ async function cargarClientesPrestamo() {
     const selector = document.querySelector(
         "#prestamoCliente"
     );
+    const buscador = document.querySelector(
+        "#buscarClientePrestamo"
+    );
+    const resultado = document.querySelector(
+        "#resultadoBusquedaPrestamo"
+    );
 
     try {
         const clientes = await apiFetch("/clientes");
@@ -179,22 +202,75 @@ async function cargarClientesPrestamo() {
             (cliente) => cliente.activo
         );
 
-        selector.innerHTML = `
-      <option value="">
-        Selecciona un cliente
-      </option>
+        const cargarOpciones = (clientesFiltrados) => {
+            const idSeleccionado = Number(selector.value);
 
-      ${clientesActivos
+            selector.innerHTML = `
+        <option value="">
+          ${clientesFiltrados.length
+                    ? "Selecciona un cliente"
+                    : "No se encontraron clientes"}
+        </option>
+
+        ${clientesFiltrados
                 .map(
                     (cliente) => `
-            <option value="${cliente.idCliente}">
-              ${obtenerNombreCliente(cliente)}
-              ${cliente.dni ? `- DNI ${cliente.dni}` : ""}
-            </option>
-          `
+              <option value="${cliente.idCliente}">
+                ${escaparTexto(obtenerNombreCliente(cliente))}
+                ${cliente.dni
+                            ? `- DNI ${escaparTexto(cliente.dni)}`
+                            : ""}
+              </option>
+            `
                 )
                 .join("")}
-    `;
+      `;
+
+            selector.disabled = clientesFiltrados.length === 0;
+
+            const conservaSeleccion = clientesFiltrados.some(
+                (cliente) =>
+                    Number(cliente.idCliente) === idSeleccionado
+            );
+
+            if (conservaSeleccion) {
+                selector.value = String(idSeleccionado);
+            } else if (clientesFiltrados.length === 1) {
+                selector.value = String(clientesFiltrados[0].idCliente);
+            }
+        };
+
+        const filtrarClientes = () => {
+            const texto = normalizarBusqueda(buscador.value);
+
+            const clientesFiltrados = clientesActivos.filter(
+                (cliente) => {
+                    const datosBusqueda = [
+                        obtenerNombreCliente(cliente),
+                        cliente.dni,
+                        cliente.codigoCliente
+                    ]
+                        .filter(Boolean)
+                        .join(" ");
+
+                    return normalizarBusqueda(datosBusqueda)
+                        .includes(texto);
+                }
+            );
+
+            cargarOpciones(clientesFiltrados);
+
+            resultado.textContent = texto
+                ? `${clientesFiltrados.length} ${
+                    clientesFiltrados.length === 1
+                        ? "cliente encontrado"
+                        : "clientes encontrados"
+                }`
+                : "";
+        };
+
+        cargarOpciones(clientesActivos);
+        buscador.addEventListener("input", filtrarClientes);
     } catch (error) {
         selector.innerHTML = `
       <option value="">
@@ -297,7 +373,10 @@ function activarFormularioPrestamo() {
                 mensaje.textContent =
                     `Préstamo ${prestamoGuardado.numeroPrestamo} guardado correctamente.`;
 
-                formulario.reset(); colocarFechasPrestamo();
+                formulario.reset();
+                document.querySelector("#buscarClientePrestamo")
+                    .dispatchEvent(new Event("input"));
+                colocarFechasPrestamo();
                 activarValoresCalculadosEnCero();
             } catch (error) {
                 mensaje.textContent = error.message;
@@ -356,6 +435,23 @@ function obtenerNombreCliente(cliente) {
     ]
         .filter(Boolean)
         .join(" ");
+}
+
+function normalizarBusqueda(valor) {
+    return String(valor || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function escaparTexto(valor) {
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 function formatearDinero(valor) {
