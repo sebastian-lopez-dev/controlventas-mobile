@@ -252,7 +252,7 @@ function activarAccionesClientes(clientes, usuario, volverAlInicio) {
   });
 }
 
-function mostrarFormularioCliente(cliente, volverAClientes) {
+export function mostrarFormularioCliente(cliente, volverAClientes) {
   const editando = Boolean(cliente);
 
   document.querySelector("#app").innerHTML = `
