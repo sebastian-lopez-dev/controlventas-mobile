@@ -179,7 +179,7 @@ export async function mostrarNuevoPrestamo(
 
     colocarFechasPrestamo();
     activarCalculoPrestamo();
-    activarFormularioPrestamo();
+    activarFormularioPrestamo(volverALista);
 
     await cargarClientesPrestamo();
 }
@@ -314,7 +314,7 @@ function activarCalculoPrestamo() {
     porcentaje.addEventListener("change", calcular);
 }
 
-function activarFormularioPrestamo() {
+function activarFormularioPrestamo(volverALista) {
     document
         .querySelector("#formNuevoPrestamo")
         .addEventListener("submit", async (evento) => {
@@ -362,7 +362,7 @@ function activarFormularioPrestamo() {
                 botonGuardar.textContent = "Guardando...";
                 mensaje.textContent = "";
 
-                const prestamoGuardado = await apiFetch(
+                await apiFetch(
                     "/prestamos",
                     {
                         method: "POST",
@@ -370,14 +370,7 @@ function activarFormularioPrestamo() {
                     }
                 );
 
-                mensaje.textContent =
-                    `Préstamo ${prestamoGuardado.numeroPrestamo} guardado correctamente.`;
-
-                formulario.reset();
-                document.querySelector("#buscarClientePrestamo")
-                    .dispatchEvent(new Event("input"));
-                colocarFechasPrestamo();
-                activarValoresCalculadosEnCero();
+                volverALista();
             } catch (error) {
                 mensaje.textContent = error.message;
             } finally {
@@ -385,16 +378,6 @@ function activarFormularioPrestamo() {
                 botonGuardar.textContent = "Guardar préstamo";
             }
         });
-}
-
-function activarValoresCalculadosEnCero() {
-    document.querySelector(
-        "#interesCalculado"
-    ).textContent = formatearDinero(0);
-
-    document.querySelector(
-        "#deudaTotalPrestamo"
-    ).textContent = formatearDinero(0);
 }
 
 function colocarFechasPrestamo() {
