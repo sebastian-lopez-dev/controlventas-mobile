@@ -613,7 +613,10 @@ async function mostrarInicioPrestamos(usuario) {
         if (accion === "Nuevo préstamo") {
           mostrarNuevoPrestamo(
             usuario,
-            () => mostrarInicioPrestamos(usuario)
+            () => mostrarPrestamos(
+              usuario,
+              () => mostrarInicioPrestamos(usuario),
+            ),
           );
           return;
         }

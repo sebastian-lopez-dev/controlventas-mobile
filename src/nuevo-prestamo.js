@@ -28,7 +28,22 @@ export async function mostrarNuevoPrestamo(
             <label for="buscarClientePrestamo">Cliente</label>
 
             <div class="buscador-contrato">
-              <span aria-hidden="true">⌕</span>
+              <span aria-hidden="true">
+                <svg
+                  width="17"
+                  height="17"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  style="display: block"
+                >
+                  <circle cx="11" cy="11" r="7"></circle>
+                  <path d="m20 20-4-4"></path>
+                </svg>
+              </span>
 
               <input
                 type="search"
