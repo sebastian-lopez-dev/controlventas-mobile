@@ -20,6 +20,7 @@ html,
 body {
   width: 100%;
   min-height: 100%;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -4808,6 +4809,10 @@ button {
   border: 1px solid #dce4ef;
   border-radius: 12px;
   outline: none;
+}
+
+#formNuevoPrestamo .campo .buscador-contrato input {
+  padding-left: 43px;
 }
 
 #formNuevoPrestamo .campo textarea {
