@@ -37,6 +37,156 @@ async function configurarPWA() {
 
 configurarPWA();
 
+function configurarRetrocesoDispositivo() {
+  const app = document.querySelector("#app");
+
+  // La URL de la aplicación es siempre la misma. Creamos un estado base
+  // para que las distintas pantallas renderizadas con JavaScript puedan
+  // comportarse como páginas reales al usar Atrás.
+  history.replaceState(
+    { controlventasBase: true },
+    "",
+    window.location.href
+  );
+
+  let procesandoRetroceso = false;
+
+  const obtenerBotonVolver = () => {
+    const botonVolver = app.querySelector(
+      '[id^="btnVolver"], .btn-volver'
+    );
+
+    if (botonVolver) {
+      return botonVolver;
+    }
+
+    // En la selección principal del administrador, el botón Atrás
+    // del navegador/dispositivo debe comportarse como "Salir":
+    // cerrar la sesión y regresar al login.
+    const botonSalirSeleccion = app.querySelector(
+      "#btnCerrarSesionSeleccion"
+    );
+
+    if (botonSalirSeleccion) {
+      return botonSalirSeleccion;
+    }
+
+    const botonPrincipal = app.querySelector("#btnCerrarSesion");
+
+    if (
+      botonPrincipal &&
+      botonPrincipal.textContent.trim().toLowerCase() === "volver"
+    ) {
+      return botonPrincipal;
+    }
+
+    return null;
+  };
+
+  const obtenerIdPantalla = (botonVolver) => {
+    if (!botonVolver) {
+      return null;
+    }
+
+    return (
+      botonVolver.id ||
+      botonVolver.getAttribute("data-accion") ||
+      botonVolver.className ||
+      "pantalla-interna"
+    );
+  };
+
+  const registrarPantallaEnHistorial = () => {
+    const botonVolver = obtenerBotonVolver();
+
+    if (!botonVolver) {
+      return;
+    }
+
+    const idPantalla = obtenerIdPantalla(botonVolver);
+
+    const estadoActual =
+      history.state && typeof history.state === "object"
+        ? history.state
+        : {};
+
+    if (estadoActual.controlventasPantalla === idPantalla) {
+      return;
+    }
+
+    history.pushState(
+      {
+        controlventasPantalla: idPantalla
+      },
+      "",
+      window.location.href
+    );
+  };
+
+  window.addEventListener("popstate", () => {
+    const botonVolver = obtenerBotonVolver();
+
+    if (!botonVolver) {
+      return;
+    }
+
+    procesandoRetroceso = true;
+    botonVolver.click();
+
+    window.setTimeout(() => {
+      procesandoRetroceso = false;
+    }, 0);
+  });
+
+  // Las flechas "Volver" dibujadas dentro de la app usan también el
+  // historial. De esta manera funcionan igual que Atrás en Android.
+  document.addEventListener(
+    "click",
+    (evento) => {
+      if (procesandoRetroceso) {
+        return;
+      }
+
+      const elemento = evento.target.closest(
+        '[id^="btnVolver"], .btn-volver'
+      );
+
+      let esBotonVolver = Boolean(elemento);
+
+      if (!esBotonVolver) {
+        const botonPrincipal = evento.target.closest("#btnCerrarSesion");
+
+        esBotonVolver = Boolean(
+          botonPrincipal &&
+          botonPrincipal.textContent.trim().toLowerCase() === "volver"
+        );
+      }
+
+      if (!esBotonVolver || !history.state?.controlventasPantalla) {
+        return;
+      }
+
+      evento.preventDefault();
+      evento.stopImmediatePropagation();
+      history.back();
+    },
+    true
+  );
+
+  const observador = new MutationObserver(
+    registrarPantallaEnHistorial
+  );
+
+  observador.observe(app, {
+    childList: true,
+    subtree: true
+  });
+
+  registrarPantallaEnHistorial();
+}
+
+configurarRetrocesoDispositivo();
+
 document.querySelector("#app").innerHTML = `
   <main class="pagina-login">
     <section class="login-contenedor">
@@ -201,4 +351,3 @@ formLogin.addEventListener("submit", async (evento) => {
     btnIngresar.textContent = "Ingresar";
   }
 });
-

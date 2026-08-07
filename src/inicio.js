@@ -611,6 +611,14 @@ async function mostrarInicioPrestamos(usuario) {
         }
 
         if (accion === "Nuevo préstamo") {
+          history.pushState(
+            {
+              controlventasPantalla: "btnVolverPrestamos"
+            },
+            "",
+            window.location.href
+          );
+
           mostrarNuevoPrestamo(
             usuario,
             () => mostrarPrestamos(
@@ -618,6 +626,7 @@ async function mostrarInicioPrestamos(usuario) {
               () => mostrarInicioPrestamos(usuario),
             ),
           );
+
           return;
         }
 
